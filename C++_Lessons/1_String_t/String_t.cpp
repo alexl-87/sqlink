@@ -3,7 +3,6 @@
 #include <ctype.h>
 #include <iostream>
 #include "String_t.h"
-#define NUM_OF_CHARS 
 
 using namespace std;
 
@@ -95,7 +94,7 @@ void string_t::upperCase()
 
 	while(m_str[i] != '\0')
 	{
-		toupper(m_str[i]);
+		m_str[i] = toupper(m_str[i]);
 	}
 }
 
@@ -105,11 +104,11 @@ void string_t::lowerCase()
 
 	while(m_str[i] != '\0')
 	{
-		tolower(m_str[i]);
+		m_str[i] = tolower(m_str[i]);
 	}
 }
 
-void string_t::operator+=(const char* str)
+string_t& string_t::operator+=(const char* str)
 {
 	if(str != 0)
 	{
@@ -119,14 +118,16 @@ void string_t::operator+=(const char* str)
 		delete[] m_str;
 		m_str = tempStr;
 	}
+	return *this;
 }
 
-void string_t::operator+=(const string_t& str_t)
+string_t& string_t::operator+=(const string_t& str_t)
 {
 	this+=str_t.m_str;
+	return *this;
 }
 
-void string_t::prepend(const char* str)
+string_t& string_t::prepend(const char* str)
 {
 	if(str != 0)
 	{
@@ -136,43 +137,112 @@ void string_t::prepend(const char* str)
 		delete[] m_str;
 		m_str = tempStr;
 	}
+	return *this;
 }
 
-void string_t::prepend(const string_t& str_t)
+string_t& string_t::prepend(const string_t& str_t)
 {
 	this.prepend(str_t.m_str);
+	return *this;
 }
+
 bool string_t::operator<(const string_t& str_t) const
 {
-
+	int result = this.compare(str_t);
+	if(result == 2)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-int string_t::operator>(const string_t& str_t) const
+bool string_t::operator>(const string_t& str_t) const
 {
-
+	int result = this.compare(str_t);
+	if(result == 1)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-int string_t::operator>=(const string_t& str_t) const
+bool string_t::operator>=(const string_t& str_t) const
 {
-
+	int result = this.compare(str_t);
+	if(result == 1 || result == 0)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-int string_t::operator<=(const string_t& str_t) const
+bool string_t::operator<=(const string_t& str_t) const
 {
-
+	int result = this.compare(str_t);
+	if(result == 2 || result == 0)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-int string_t::operator==(const string_t& str_t) const
+bool string_t::operator==(const string_t& str_t) const
 {
-
+	int result = this.compare(str_t);
+	if(result == 0)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-int string_t::operator!=(const string_t& str) const
+bool string_t::operator!=(const string_t& str) const
 {
-
+	int result = this.compare(str_t);
+	if(result != 0)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
-int string_t::isContains(const string_t& str) const
+bool string_t::isContains(const string_t& str) const
 {
+	if(strstr(m_str, str_t.m_str) != 0)
+	{
+		return true;
+	}
 
+	else
+	{
+		return false;
+	}
+}
+
+ostream & string_t::operator<<(ostream &out, const string_t& str) const
+{
+	return out;
+}
+
+isteam & string_t::operator>>(istream &in, const string_t& str)
+{
+	return in;
 }
