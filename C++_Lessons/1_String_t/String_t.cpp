@@ -7,28 +7,17 @@ using namespace std;
 
 string_t::string_t()
 {
-	m_str = new char[20];
-	strcpy(m_str, "***DEFAULT_STRING***");
+	buildStr(0);
 }
 
 string_t::string_t(const char* newStr)
 {
-	if(!newStr)
-	{
-		new (this) string_t();
-	}
-
-	else
-	{
-		int newStrLen = strlen(newStr);
-		m_str = new char[newStrLen];
-		strcpy(m_str, newStr);
-	}
+	buildStr(newStr);
 }
 
 string_t::string_t(const string_t& str)
 {
-	new (this) string_t(str.m_str);
+	buildStr(str.m_str);
 }
 
 string_t::~string_t()
@@ -38,12 +27,7 @@ string_t::~string_t()
 
 int string_t::getLength() const
 {
-	int retVal = 0;
-	if(m_str)
-	{
-		retVal = strlen(m_str);
-	}
-	return retVal;
+	return strlen(m_str);
 }
 
 const char* string_t::getString() const
@@ -53,17 +37,10 @@ const char* string_t::getString() const
 
 void string_t::setString(const char* str)
 {
-	if(str)
-	{
-		delete[] m_str;
-		//new (this) string_t(str);
-		int newStrLen = strlen(str);
-		m_str = new char[newStrLen];
-		strcpy(m_str, str);
-	}
+	buildStr(str);
 }
 
-int string_t::compare(string_t& str) const
+int string_t::compare(const string_t& str) const
 {
 	int result = strcmp(m_str, str.m_str);
 
@@ -83,12 +60,30 @@ int string_t::compare(string_t& str) const
 
 string_t& string_t::operator=(const string_t& str)
 {
-	(this)->~string_t();
-	new (this) string_t(str.m_str);
+	if(this != &str)
+	{
+		buildStr(str.m_str);
+	}
+
 	return *this;
 }
 
 void string_t::print() const
 {
 	printf("%s\n", m_str);
+}
+
+void string_t::buildStr(const char* str)
+{
+	delete[] m_str;
+	if(str != 0)
+	{
+		m_str = new char[strlen(str)+1];
+		strcpy(m_str, str);
+	}
+	else
+	{
+		m_str = new char[4];
+		m_str[0] = '\0';
+	}
 }
