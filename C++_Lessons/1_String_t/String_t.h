@@ -24,7 +24,7 @@ class string_t
 		void prepend(const char* str);
 		void operator+=(const string_t& str_t);
 		void operator+=(const char* str);
-		int operator<(const string_t& str) const;
+		bool operator<(const string_t& str) const;
 		int operator>(const string_t& str) const;
 		int operator>=(const string_t& str) const;
 		int operator<=(const string_t& str) const;

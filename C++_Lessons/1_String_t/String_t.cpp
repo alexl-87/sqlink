@@ -142,27 +142,27 @@ void string_t::prepend(const string_t& str_t)
 {
 	this.prepend(str_t.m_str);
 }
-int string_t::operator<(const string_t& str) const
+bool string_t::operator<(const string_t& str_t) const
 {
 
 }
 
-int string_t::operator>(const string_t& str) const
+int string_t::operator>(const string_t& str_t) const
 {
 
 }
 
-int string_t::operator>=(const string_t& str) const
+int string_t::operator>=(const string_t& str_t) const
 {
 
 }
 
-int string_t::operator<=(const string_t& str) const
+int string_t::operator<=(const string_t& str_t) const
 {
 
 }
 
-int string_t::operator==(const string_t& str) const
+int string_t::operator==(const string_t& str_t) const
 {
 
 }
@@ -174,5 +174,5 @@ int string_t::operator!=(const string_t& str) const
 
 int string_t::isContains(const string_t& str) const
 {
-	
+
 }
