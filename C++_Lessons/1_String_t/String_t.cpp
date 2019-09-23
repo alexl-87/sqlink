@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <iostream>
 #include "String_t.h"
+#define NUM_OF_CHARS 
 
 using namespace std;
 
@@ -44,17 +45,16 @@ int string_t::compare(const string_t& str) const
 {
 	int result = strcmp(m_str, str.m_str);
 
-	if (result != 0)
+	if (result > 0)
 	{
-		if(strlen(m_str) >=strlen(str.m_str))
-		{
-			result = 2;
-		}
-		else
-		{
-			result = 1;
-		}
+		result = 1;
 	}
+
+	else
+	{
+		result = 2;
+	}
+
 	return result;
 }
 
@@ -70,7 +70,7 @@ string_t& string_t::operator=(const string_t& str)
 
 void string_t::print() const
 {
-	printf("%s\n", m_str);
+	printf("%s", m_str);
 }
 
 void string_t::buildStr(const char* str)
@@ -87,3 +87,23 @@ void string_t::buildStr(const char* str)
 		m_str[0] = '\0';
 	}
 }
+
+void string_t::upperCase()
+{
+	int i = 0;
+
+	while(m_str[i] != '\0')
+	{
+		m_str[i] = 'A';
+	}
+}
+void string_t::lowerCase(){}
+void string_t::prepend(const string_t& str){}
+void string_t::operator+=(const string_t& str){}
+int string_t::isContains(const string_t& str) const{}
+int string_t::operator<(const string_t& str) const{}
+int string_t::operator>(const string_t& str) const{}
+int string_t::operator>=(const string_t& str) const{}
+int string_t::operator<=(const string_t& str) const{}
+int string_t::operator==(const string_t& str) const{}
+int string_t::operator!=(const string_t& str) const{}

@@ -6,17 +6,30 @@ class string_t
 
 
 	public:
-		string_t(); 							//default constructor
-		string_t(const char* newStr); 			//constructor
-		string_t(const string_t& str); 			//copy constructor
-		~string_t(); 							//destructor
+		string_t();
+		string_t(const char* newStr);
+		string_t(const string_t& str);
+		~string_t();
 
-		const char* getString() const; 			//get string
-		int getLength() const; 					//get string length
-		int compare(const string_t& str) const; //compare two strings
-		void setString(const char* str); 		//set string
-		void print() const;						//print string
+		const char* getString() const;
+		int getLength() const;
+		int compare(const string_t& str) const;
+		void setString(const char* str);
+		void print() const;
 		string_t& operator=(const string_t& str);
+		void upperCase();
+		void lowerCase();
+		int isContains(const string_t& str) const;
+		void prepend(const string_t& str);
+		void operator+=(const string_t& str);
+		int operator<(const string_t& str) const;
+		int operator>(const string_t& str) const;
+		int operator>=(const string_t& str) const;
+		int operator<=(const string_t& str) const;
+		int operator==(const string_t& str) const;
+		int operator!=(const string_t& str) const;
+		//void operator<<(const string_t& str);
+		//void operator>>(const string_t& str);
 		
 	private:
 		char* m_str;
