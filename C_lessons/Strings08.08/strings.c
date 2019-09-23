@@ -1,7 +1,4 @@
-/*
-*** PULL TESTING ***
-**** success ******
-*/
+
 #include <stdio.h>
 void Strcopy(char* source, char* copy);
 void Strcat(char* source, char* new_string);
