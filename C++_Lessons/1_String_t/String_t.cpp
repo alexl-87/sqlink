@@ -96,6 +96,7 @@ void string_t::upperCase()
 	while(m_str[i] != '\0')
 	{
 		m_str[i] = toupper(m_str[i]);
+		i++;
 	}
 }
 
@@ -106,6 +107,7 @@ void string_t::lowerCase()
 	while(m_str[i] != '\0')
 	{
 		m_str[i] = tolower(m_str[i]);
+		i++;
 	}
 }
 
@@ -238,16 +240,16 @@ bool string_t::isContains(const string_t& str_t) const
 	}
 }
 
-std::ostream& string_t::operator<<(std::ostream &out, string_t& str_t)
+ostream& operator<<(ostream& sout, const string_t& str_t)
 {
-	out<<str_t.m_str;
-	return out;
+	sout << str_t.getString();
+	return sout;
 }
 
-std::istream& string_t::operator>>(std::istream &in)
+istream& operator>>(istream& sin, string_t& str_t)
 {
 	char tempStr[1024];
-	in>>tempStr;
-	setString(tempStr);
-	return in;
+	sin>>tempStr;
+	str_t.setString(tempStr);
+	return sin;
 }
