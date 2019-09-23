@@ -38,6 +38,7 @@ const char* string_t::getString() const
 
 void string_t::setString(const char* str)
 {
+	delete[] m_str;
 	buildStr(str);
 }
 
@@ -62,6 +63,7 @@ string_t& string_t::operator=(const string_t& str)
 {
 	if(this != &str)
 	{
+		delete[] m_str;
 		buildStr(str.m_str);
 	}
 
@@ -75,7 +77,6 @@ void string_t::print() const
 
 void string_t::buildStr(const char* str)
 {
-	delete[] m_str;
 	if(str != 0)
 	{
 		m_str = new char[strlen(str)+1];
@@ -123,7 +124,7 @@ string_t& string_t::operator+=(const char* str)
 
 string_t& string_t::operator+=(const string_t& str_t)
 {
-	this+=str_t.m_str;
+	*this+=str_t.m_str;
 	return *this;
 }
 
@@ -142,13 +143,13 @@ string_t& string_t::prepend(const char* str)
 
 string_t& string_t::prepend(const string_t& str_t)
 {
-	this.prepend(str_t.m_str);
+	this->prepend(str_t.m_str);
 	return *this;
 }
 
 bool string_t::operator<(const string_t& str_t) const
 {
-	int result = this.compare(str_t);
+	int result = this->compare(str_t);
 	if(result == 2)
 	{
 		return true;
@@ -161,7 +162,7 @@ bool string_t::operator<(const string_t& str_t) const
 
 bool string_t::operator>(const string_t& str_t) const
 {
-	int result = this.compare(str_t);
+	int result = this->compare(str_t);
 	if(result == 1)
 	{
 		return true;
@@ -174,7 +175,7 @@ bool string_t::operator>(const string_t& str_t) const
 
 bool string_t::operator>=(const string_t& str_t) const
 {
-	int result = this.compare(str_t);
+	int result = this->compare(str_t);
 	if(result == 1 || result == 0)
 	{
 		return true;
@@ -187,7 +188,7 @@ bool string_t::operator>=(const string_t& str_t) const
 
 bool string_t::operator<=(const string_t& str_t) const
 {
-	int result = this.compare(str_t);
+	int result = this->compare(str_t);
 	if(result == 2 || result == 0)
 	{
 		return true;
@@ -200,7 +201,7 @@ bool string_t::operator<=(const string_t& str_t) const
 
 bool string_t::operator==(const string_t& str_t) const
 {
-	int result = this.compare(str_t);
+	int result = this->compare(str_t);
 	if(result == 0)
 	{
 		return true;
@@ -211,9 +212,9 @@ bool string_t::operator==(const string_t& str_t) const
 	}
 }
 
-bool string_t::operator!=(const string_t& str) const
+bool string_t::operator!=(const string_t& str_t) const
 {
-	int result = this.compare(str_t);
+	int result = this->compare(str_t);
 	if(result != 0)
 	{
 		return true;
@@ -224,7 +225,7 @@ bool string_t::operator!=(const string_t& str) const
 	}
 }
 
-bool string_t::isContains(const string_t& str) const
+bool string_t::isContains(const string_t& str_t) const
 {
 	if(strstr(m_str, str_t.m_str) != 0)
 	{
@@ -237,12 +238,16 @@ bool string_t::isContains(const string_t& str) const
 	}
 }
 
-ostream & string_t::operator<<(ostream &out, const string_t& str) const
+std::ostream& string_t::operator<<(std::ostream &out, string_t& str_t)
 {
+	out<<str_t.m_str;
 	return out;
 }
 
-isteam & string_t::operator>>(istream &in, const string_t& str)
+std::istream& string_t::operator>>(std::istream &in)
 {
+	char tempStr[1024];
+	in>>tempStr;
+	setString(tempStr);
 	return in;
 }

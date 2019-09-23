@@ -17,21 +17,21 @@ class string_t
 		void setString(const char* str);
 		void print() const;
 		string_t& operator=(const string_t& str);
+		string_t& prepend(const char* str);
+		string_t& prepend(const string_t& str_t);
+		string_t& operator+=(const char* str);
+		string_t& operator+=(const string_t& str_t);
+		bool operator<(const string_t& str) const;
+		bool operator>(const string_t& str_t) const;
+		bool operator>=(const string_t& str) const;
+		bool operator<=(const string_t& str) const;
+		bool operator==(const string_t& str) const;
+		bool operator!=(const string_t& str) const;
 		void upperCase();
 		void lowerCase();
 		bool isContains(const string_t& str) const;
-		string_t& prepend(const string_t& str_t);
-		string_t& prepend(const char* str);
-		string_t& operator+=(const string_t& str_t);
-		string_t& operator+=(const char* str);
-		bool operator<(const string_t& str) const;
-		int operator>(const string_t& str) const;
-		int operator>=(const string_t& str) const;
-		int operator<=(const string_t& str) const;
-		int operator==(const string_t& str) const;
-		int operator!=(const string_t& str) const;
-		ostream & operator<<(ostream &out, const string_t& str) const;
-		isteam & operator>>(istream &in, const string_t& str);
+		friend std::ostream& operator<<(std::ostream &out, string_t& str_t);
+		std::istream& operator>>(std::istream &in);
 		
 	private:
 		char* m_str;
