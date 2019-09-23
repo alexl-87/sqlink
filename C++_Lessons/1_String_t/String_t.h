@@ -20,8 +20,10 @@ class string_t
 		void upperCase();
 		void lowerCase();
 		int isContains(const string_t& str) const;
-		void prepend(const string_t& str);
-		void operator+=(const string_t& str);
+		void prepend(const string_t& str_t);
+		void prepend(const char* str);
+		void operator+=(const string_t& str_t);
+		void operator+=(const char* str);
 		int operator<(const string_t& str) const;
 		int operator>(const string_t& str) const;
 		int operator>=(const string_t& str) const;

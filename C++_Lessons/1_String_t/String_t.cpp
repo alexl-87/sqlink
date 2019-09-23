@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdio.h>
+#include <ctype.h>
 #include <iostream>
 #include "String_t.h"
 #define NUM_OF_CHARS 
@@ -94,16 +95,84 @@ void string_t::upperCase()
 
 	while(m_str[i] != '\0')
 	{
-		m_str[i] = 'A';
+		toupper(m_str[i]);
 	}
 }
-void string_t::lowerCase(){}
-void string_t::prepend(const string_t& str){}
-void string_t::operator+=(const string_t& str){}
-int string_t::isContains(const string_t& str) const{}
-int string_t::operator<(const string_t& str) const{}
-int string_t::operator>(const string_t& str) const{}
-int string_t::operator>=(const string_t& str) const{}
-int string_t::operator<=(const string_t& str) const{}
-int string_t::operator==(const string_t& str) const{}
-int string_t::operator!=(const string_t& str) const{}
+
+void string_t::lowerCase()
+{
+	int i = 0;
+
+	while(m_str[i] != '\0')
+	{
+		tolower(m_str[i]);
+	}
+}
+
+void string_t::operator+=(const char* str)
+{
+	if(str != 0)
+	{
+		char* tempStr = new char[strlen(str)+strlen(m_str)+1];
+		strcpy(tempStr, m_str);
+		strcat(tempStr, str);
+		delete[] m_str;
+		m_str = tempStr;
+	}
+}
+
+void string_t::operator+=(const string_t& str_t)
+{
+	this+=str_t.m_str;
+}
+
+void string_t::prepend(const char* str)
+{
+	if(str != 0)
+	{
+		char* tempStr = new char[strlen(str)+strlen(m_str)+1];
+		strcpy(tempStr, str);
+		strcat(tempStr, m_str);
+		delete[] m_str;
+		m_str = tempStr;
+	}
+}
+
+void string_t::prepend(const string_t& str_t)
+{
+	this.prepend(str_t.m_str);
+}
+int string_t::operator<(const string_t& str) const
+{
+
+}
+
+int string_t::operator>(const string_t& str) const
+{
+
+}
+
+int string_t::operator>=(const string_t& str) const
+{
+
+}
+
+int string_t::operator<=(const string_t& str) const
+{
+
+}
+
+int string_t::operator==(const string_t& str) const
+{
+
+}
+
+int string_t::operator!=(const string_t& str) const
+{
+
+}
+
+int string_t::isContains(const string_t& str) const
+{
+	
+}
