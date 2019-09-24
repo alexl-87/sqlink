@@ -4,8 +4,6 @@
 using namespace std;
 class string_t
 {
-
-
 	public:
 		string_t();
 		string_t(const char* newStr);
