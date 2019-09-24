@@ -8,6 +8,9 @@ void testGetString();
 void testSetString();
 void testCompare();
 void testOpEq();
+void printTest();
+void testUppercase();
+void testLowercase();
 int main()
 {
 	int switchCase = 0;
@@ -31,6 +34,16 @@ int main()
 				break;
 			case 5:
 				testOpEq();
+				break;
+			case 6:
+				printTest();
+				break;
+			case 7:
+				testUppercase();
+				break;
+			case 8:
+				testLowercase();
+				break;
 		}
 	}
 	return 0;
@@ -108,4 +121,31 @@ void testOpEq()
 
 	str_t1 = str_t2; 
 	cout<<"First string = "<<str_t1<<endl;
+}
+
+void printTest()
+{
+	cout<<"Insert string_t"<<endl;
+	char tempstr[1024];
+	cin>>tempstr;
+	string_t str_t(tempstr);
+	str_t.print();
+}
+
+void testUppercase()
+{
+	cout<<"Insert string_t"<<endl;
+	char tempstr[1024];
+	cin>>tempstr;
+	string_t str_t(tempstr);
+	str_t.upperCase();
+}
+
+void testLowercase()
+{
+	cout<<"Insert string_t"<<endl;
+	char tempstr[1024];
+	cin>>tempstr;
+	string_t str_t(tempstr);
+	str_t.upperCase();
 }
