@@ -11,7 +11,7 @@ void testOpEq();
 void printTest();
 void testUppercase();
 void testLowercase();
-
+char tempstr[1024];
 int main()
 {
 	int switchCase = 0;
@@ -68,7 +68,6 @@ void printMenu()
 void testGetLen()
 {
 	cout<<"Insert string"<<endl;
-	char tempstr[1024];
 	cin>>tempstr;
 	string_t str_t(tempstr);
 	cout<<"Length: "<<str_t.getLength()<<endl;
@@ -77,7 +76,6 @@ void testGetLen()
 void testGetString()
 {
 	cout<<"Insert string_t"<<endl;
-	char tempstr[1024];
 	cin>>tempstr;
 	string_t str_t(tempstr);
 	cout<<str_t.getString()<<endl;
@@ -86,7 +84,6 @@ void testGetString()
 void testSetString()
 {
 	cout<<"Insert string"<<endl;
-	char tempstr[1024];
 	cin>>tempstr;
 	string_t str_t;
 	str_t.setString(tempstr);
@@ -96,15 +93,11 @@ void testSetString()
 void testCompare()
 {
 	cout<<"Insert first string:";
-	char ch1[1024];
-	cin>>ch1;
-
+	cin>>tempstr;
+	string_t str_t1(tempstr);
 	cout<<"\nInsert second string:";
-	char ch2[1024];
-	cin>>ch2;
-
-	string_t str_t1(ch1);
-	string_t str_t2(ch2);
+	cin>>tempstr;
+	string_t str_t2(tempstr);
 
 	cout<<"\nResult: "<<str_t1.compare(str_t2)<<endl;
 }
@@ -112,14 +105,11 @@ void testCompare()
 void testOpEq()
 {
 	cout<<"Insert first string:";
-	char ch1[1024];
-	cin>>ch1;
+	cin>>tempstr;
+	string_t str_t1(tempstr);
 	cout<<"\nInsert second string:";
-	char ch2[1024];
-	cin>>ch2;
-
-	string_t str_t1(ch1);
-	string_t str_t2(ch2);
+	cin>>tempstr;
+	string_t str_t2(tempstr);
 
 	str_t1 = str_t2; 
 	cout<<"First string = "<<str_t1<<endl;
