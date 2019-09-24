@@ -63,7 +63,7 @@ int string_t::compare(const string_t& str) const
 	return result;
 }
 
-int firstOccurance(const char c) const
+int string_t::firstOccurance(const char c) const
 {
 	int i = 0;
 
@@ -93,9 +93,32 @@ int firstOccurance(const char c) const
 	return -1;
 }
 
-int lastOccurance(const char c) const
+int string_t::lastOccurance(const char c) const
 {
-	int len = strlen
+	int len = strlen(m_str);
+	int i;
+	if(caseSens)
+	{
+		for (i = len-1; i >-1; --i)
+		{
+			if(m_str[i]==c)
+			{
+				return i;
+			}
+		}
+	}
+
+	else
+	{
+		for (i = len-1; i >-1; --i)
+		{
+			if(toupper(m_str[i])==toupper(c))
+			{
+				return i;
+			}
+		}
+	}
+	return i;
 }
 
 string_t& string_t::operator=(const string_t& str)
@@ -119,17 +142,17 @@ void string_t::buildStr(const char* str)
 	if(str != 0)
 	{
 		unsigned int len = strlen(str);
-		if(len > defCapacity)
+		if(len >= defCapacity)
 		{
-			capacity = (unsigned int) pow(2,(unsigned int)log2(capacity)+1);
-			defCapacity = capacity;
+			m_capacity = (unsigned int) pow(2,(unsigned int)log2(len)+1);
+			defCapacity = m_capacity;
 		}
 
 		else
 		{
-			capacity = defCapacity;	
+			m_capacity = defCapacity;	
 		}
-		m_str = new char[capacity];
+		m_str = new char[m_capacity];
 		strcpy(m_str, str);
 	}
 		
@@ -137,7 +160,7 @@ void string_t::buildStr(const char* str)
 	{
 		m_str = new char[defCapacity];
 		m_str[0] = '\0';
-		capacity = defCapacity;
+		m_capacity = defCapacity;
 	}
 }
 
@@ -227,6 +250,18 @@ bool string_t::operator==(const string_t& str_t) const
 bool string_t::operator!=(const string_t& str_t) const
 {
 	return(compare(str_t) != 0);
+}
+
+string_t& string_t::operator()(int start, int length)
+{
+	if((length-start)<(int)strlen(m_str))
+	{
+		char* tempStr = new char[m_capacity-1];
+		strncpy(tempStr, (const char*) &m_str[start], length);
+		string_t* retVal = new string_t(tempStr); 
+		return *retVal;
+	}
+	return *this;
 }
 
 bool string_t::isContains(const string_t& str_t) const

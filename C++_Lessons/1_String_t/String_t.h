@@ -25,6 +25,7 @@ class string_t
 		string_t& prepend(const string_t& str_t);
 		string_t& operator+=(const char* str);
 		string_t& operator+=(const string_t& str_t);
+		string_t& operator()(int start, int length);
 
 		bool operator<(const string_t& str) const;
 		bool operator>(const string_t& str_t) const;
@@ -46,7 +47,7 @@ class string_t
 		static bool caseSens;
 		static unsigned int defCapacity;
 		char* m_str;
-		unsigned int capacity;
+		unsigned int m_capacity;
 		
 		void buildStr(const char* str);
 		char* charsCat(const char* str_left, const char* str_right);
@@ -54,4 +55,5 @@ class string_t
 
 ostream& operator<<(ostream& sout, const string_t& str_t);
 istream& operator>>(istream& sin, string_t& str_t);
+
 #endif
