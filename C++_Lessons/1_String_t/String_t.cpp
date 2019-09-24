@@ -57,9 +57,10 @@ int string_t::compare(const string_t& str) const
 	{
 		result = strcasecmp(m_str, str.m_str);
 	}
-	
-	(result > 0)?(result = 1):(result = 2);
-
+	if(result != 0)
+	{
+		result = (result<0)?1:2;
+	}
 	return result;
 }
 

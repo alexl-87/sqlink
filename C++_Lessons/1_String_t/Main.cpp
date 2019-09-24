@@ -11,6 +11,7 @@ void testOpEq();
 void printTest();
 void testUppercase();
 void testLowercase();
+
 int main()
 {
 	int switchCase = 0;
@@ -97,6 +98,7 @@ void testCompare()
 	cout<<"Insert first string:";
 	char ch1[1024];
 	cin>>ch1;
+
 	cout<<"\nInsert second string:";
 	char ch2[1024];
 	cin>>ch2;
