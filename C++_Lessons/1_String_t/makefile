@@ -1,6 +1,6 @@
 CC = g++
 
-CFLAGS = -ansi -pedantic -Wall
+CFLAGS = -ansi -pedantic -Wall -g
 
 SRCS = Main.cpp String_t.cpp
 
