@@ -8,25 +8,30 @@
 using namespace std;
 unsigned int string_t::defCapacity = 2;
 bool string_t::caseSens = true;
+size_t string_t::numOfInstances = 0;
 
 string_t::string_t()
 {
 	buildStr(0);
+	numOfInstances++;
 }
 
 string_t::string_t(const char* newStr)
 {
 	buildStr(newStr);
+	numOfInstances++;
 }
 
 string_t::string_t(const string_t& str)
 {
 	buildStr(str.m_str);
+	numOfInstances++;
 }
 
 string_t::~string_t()
 {
 	delete[] m_str;
+	numOfInstances--;
 }
 
 int string_t::getLength() const
@@ -254,9 +259,9 @@ bool string_t::operator!=(const string_t& str_t) const
 	return(compare(str_t) != 0);
 }
 
-string_t& string_t::operator()(int start, int length)
+string_t& string_t::operator()(unsigned int start, unsigned int length)
 {
-	if((length-start)<(int)strlen(m_str))
+	if((length-start)<(unsigned int)strlen(m_str))
 	{
 		char* tempStr = new char[m_capacity-1];
 		strncpy(tempStr, (const char*) &m_str[start], length);
@@ -264,6 +269,15 @@ string_t& string_t::operator()(int start, int length)
 		return *retVal;
 	}
 	return *this;
+}
+
+char& string_t::operator[](unsigned int index)
+{
+	return m_str[index];
+}
+char string_t::operator[](unsigned int index) const
+{
+	return m_str[index];
 }
 
 bool string_t::isContains(const string_t& str_t) const
@@ -320,4 +334,8 @@ unsigned int string_t::setDefCapacity(unsigned int capacity)
 unsigned int string_t::getDefCapacity()
 {
 	return defCapacity;
+}
+size_t string_t::getNumOfInst()
+{
+	return numOfInstances;
 }

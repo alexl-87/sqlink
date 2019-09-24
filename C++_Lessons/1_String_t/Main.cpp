@@ -128,6 +128,9 @@ int main()
 				cin>>sencase;
 				cout<<string_t::setCase(sencase)<<endl;
 				break;
+			case 27:
+				cout<<string_t::getNumOfInst()<<endl;
+				break;
 
 			default:
 				goto END;
@@ -155,7 +158,8 @@ void printMenu()
 		<<"\t23 - get default capacity\n"
 		<<"\t24 - set default capacity\n"
 		<<"\t25 - get sensetive case\n"
-		<<"\t26 - set sensetive case\n"<<endl;
+		<<"\t26 - set sensetive case\n"
+		<<"\t27 - get num of instances\n"<<endl;
 }
 //	1
 void testGetLen()
@@ -299,6 +303,7 @@ void testLastOccurance()
 //	22
 void testGetSubstring()
 {
+	string_t* temp;
 	initStr_t1();
 	cout<<"Insert start index:"<<endl;
 	int start;
@@ -306,7 +311,9 @@ void testGetSubstring()
 	cout<<"Insert length:"<<endl;
 	int len;
 	cin>>len;
-	cout<<str_t1(start, len)<<endl;
+	temp = &str_t1(start, len);
+	cout<<*temp<<endl;
+	delete temp;
 }
 //**********************//
 void initStr_t1()

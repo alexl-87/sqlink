@@ -23,7 +23,9 @@ class string_t
 		string_t& prepend(const string_t& str_t);
 		string_t& operator+=(const char* str);
 		string_t& operator+=(const string_t& str_t);
-		string_t& operator()(int start, int length);
+		string_t& operator()(unsigned int start, unsigned int length);
+		char& operator[](unsigned int index);
+		char operator[](unsigned int index) const;
 
 		bool operator<(const string_t& str) const;
 		bool operator>(const string_t& str_t) const;
@@ -40,12 +42,14 @@ class string_t
 		static bool getCase();
 		static unsigned int setDefCapacity(unsigned int capacity);
 		static unsigned int getDefCapacity();
+		static size_t getNumOfInst();
 
 	private:
 		static bool caseSens;
 		static unsigned int defCapacity;
 		char* m_str;
 		unsigned int m_capacity;
+		static size_t numOfInstances;
 		
 		void buildStr(const char* str);
 		char* charsCat(const char* str_left, const char* str_right);
