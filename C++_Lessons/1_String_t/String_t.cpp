@@ -259,16 +259,18 @@ bool string_t::operator!=(const string_t& str_t) const
 	return(compare(str_t) != 0);
 }
 
-string_t& string_t::operator()(unsigned int start, unsigned int length)
+string_t string_t::operator()(unsigned int start, unsigned int length)
 {
-	if((length-start)<(unsigned int)strlen(m_str))
+	string_t retVal; 
+	
+	if(length<(unsigned int)strlen(m_str)-start)
 	{
 		char* tempStr = new char[m_capacity-1];
 		strncpy(tempStr, (const char*) &m_str[start], length);
-		string_t* retVal = new string_t(tempStr); 
-		return *retVal;
+		retVal.setString(tempStr); 
+		delete[] tempStr;
 	}
-	return *this;
+	return retVal;
 }
 
 char& string_t::operator[](unsigned int index)

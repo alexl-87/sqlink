@@ -23,7 +23,7 @@ class string_t
 		string_t& prepend(const string_t& str_t);
 		string_t& operator+=(const char* str);
 		string_t& operator+=(const string_t& str_t);
-		string_t& operator()(unsigned int start, unsigned int length);
+		string_t operator()(unsigned int start, unsigned int length);
 		char& operator[](unsigned int index);
 		char operator[](unsigned int index) const;
 

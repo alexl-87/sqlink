@@ -303,7 +303,6 @@ void testLastOccurance()
 //	22
 void testGetSubstring()
 {
-	string_t* temp;
 	initStr_t1();
 	cout<<"Insert start index:"<<endl;
 	int start;
@@ -311,9 +310,8 @@ void testGetSubstring()
 	cout<<"Insert length:"<<endl;
 	int len;
 	cin>>len;
-	temp = &str_t1(start, len);
-	cout<<*temp<<endl;
-	delete temp;
+	cout<<str_t1(start, len)<<endl;
+
 }
 //**********************//
 void initStr_t1()
