@@ -1,10 +1,11 @@
 #include "Car_t.h"
 #include <iostream>
+#include <string>
 using namespace std;
 
 size_t car_t::id_gen = 1;
 
-car_t::car_t():id(id_gen++)
+car_t::car_t():m_id(id_gen++), m_gear(standart)
 {
 
 }
