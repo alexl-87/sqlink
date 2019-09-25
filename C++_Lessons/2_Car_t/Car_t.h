@@ -18,7 +18,7 @@ public:
 	unsigned short getSpeed() const;
 	string getName() const;
 	unsigned short getId() const;
-	Gear getGear() const;
+	string getGear() const;
 	bool operator<(car_t& car) const;
 	bool compare(car_t& car) const;
 

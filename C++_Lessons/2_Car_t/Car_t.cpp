@@ -8,19 +8,19 @@ unsigned short car_t::def_eng_capacity = 1500;
 
 car_t::car_t():m_id(id_gen++), m_gear(standart)
 {
-
+	m_engineCapacity = def_eng_capacity;
 }
 
 car_t::car_t(string name, unsigned short engCapacity, unsigned short speed):m_id(id_gen++)
 {
 	if(name == "Private")
 	{
-		m_gear = standart;
+		m_gear = automatic;
 	}
 
 	else
 	{
-		m_gear = automatic;
+		m_gear = standart;
 	}
 
 	m_engineCapacity = engCapacity;
@@ -35,10 +35,7 @@ car_t::car_t(car_t& car):m_id(id_gen++)
 	m_engineCapacity = car.m_engineCapacity;
 }
 
-car_t::~car_t()
-{
-
-}
+car_t::~car_t(){}
 
 bool car_t::operator<(car_t& car) const
 {
@@ -70,7 +67,7 @@ unsigned short car_t::getId() const
 	return m_id;
 }
 
-car_t::Gear car_t::getGear() const
+string car_t::getGear() const
 {
-	return m_gear;
+	return (m_gear==standart)?"standart":"automatic";
 }

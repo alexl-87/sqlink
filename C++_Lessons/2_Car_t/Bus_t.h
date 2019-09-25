@@ -8,7 +8,7 @@ class bus_t : public car_t
 {
 public:
 	bus_t();
-	bus_t(unsigned short engCapacity, unsigned short speed, unsigned short line);
+	bus_t(unsigned short engCapacity, unsigned short speed, unsigned short line, unsigned short seats);
 	bus_t(bus_t& bus);
 	~bus_t();
 
