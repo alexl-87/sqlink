@@ -9,3 +9,13 @@ private_t::~private_t()
 {
 	
 }
+
+void accelerate()
+{
+
+}
+
+void reduce()
+{
+
+}

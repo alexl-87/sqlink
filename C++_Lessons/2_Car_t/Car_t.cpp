@@ -11,9 +11,9 @@ car_t::car_t():m_id(id_gen++), m_gear(standart)
 
 }
 
-car_t::car_t(string name, unsigned short engCapacity):m_id(id_gen++)
+car_t::car_t(string name, unsigned short engCapacity, unsigned short speed):m_id(id_gen++)
 {
-	if(name == "Private" || name == "private")
+	if(name == "Private")
 	{
 		m_gear = standart;
 	}
@@ -24,6 +24,7 @@ car_t::car_t(string name, unsigned short engCapacity):m_id(id_gen++)
 	}
 
 	m_engineCapacity = engCapacity;
+	m_speed = speed;
 }
 
 car_t::car_t(car_t& car):m_id(id_gen++)

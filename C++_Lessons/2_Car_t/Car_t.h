@@ -11,7 +11,7 @@ public:
 	typedef enum Gear{ automatic, standart }Gear;
 
 	car_t();
-	car_t(string name, unsigned short engCapacity);
+	car_t(string name, unsigned short engCapacity, unsigned short speed);
 	car_t(car_t& car);
 
 	void setSpeed(unsigned short speed);
