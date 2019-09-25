@@ -2,7 +2,7 @@ CC = g++
 
 CFLAGS = -ansi -pedantic -Wall -g
 
-SRCS = Car_t.cpp CarMain.cpp
+SRCS = Car_t.cpp Private_t.cpp Bus_t.cpp CarMain.cpp
 
 OBJS = $(SRCS:.c=.o)
 
