@@ -2,7 +2,7 @@ CC = g++
 
 CFLAGS = -ansi -pedantic -Wall -g
 
-SRCS = MemPage_t.cpp MemPool_t.cpp memMain.cpp
+SRCS = MemManager_t.cpp MemPage_t.cpp MemPool_t.cpp memMain.cpp
 
 OBJS = $(SRCS:.c=.o)
 

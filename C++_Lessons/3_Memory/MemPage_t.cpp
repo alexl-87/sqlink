@@ -23,18 +23,6 @@ memPage_t::~memPage_t()
 	delete[] m_data;
 }
 
-void memPage_t::setPosition(unsigned int position)
-{
-	if (position < m_capacity)
-	{
-		m_position = position;
-	}
-	else
-	{
-		throw -1;
-	}
-}
-
 unsigned int memPage_t::getCapacity() const
 {
 	return m_capacity;
@@ -42,22 +30,22 @@ unsigned int memPage_t::getCapacity() const
 
 unsigned int memPage_t::write(const void* data, unsigned int dataSize)
 {
-	p_write(data, dataSize, m_position);
+	return p_write(data, dataSize, m_position);
 }
 
 unsigned int memPage_t::write(const void* data, unsigned int dataSize, unsigned int position)
 {
-	p_write(data, dataSize, position);
+	return p_write(data, dataSize, position);
 }
 
 unsigned int memPage_t::read(void* buffer, unsigned int dataSize)
 {
-	return p_read(dataSize, m_position);
+	return p_read(buffer, dataSize, m_position);
 }
 
 unsigned int memPage_t::read(void* buffer, unsigned int dataSize, unsigned int position)
 {
-	return p_read(dataSize, position);
+	return p_read(buffer, dataSize, position);
 }
 
 void memPage_t::setDefCapacity(unsigned int capacity)
@@ -65,16 +53,21 @@ void memPage_t::setDefCapacity(unsigned int capacity)
 	m_defCapacity = capacity;
 }
 
-unsigned int memPage_t::p_write(const char* data, unsigned int dataSize, unsigned int position)
+unsigned int memPage_t::getDefCapacity()
+{
+	return m_defCapacity;
+}
+
+unsigned int memPage_t::p_write(const void* data, unsigned int dataSize, unsigned int position)
 {
 	int retVal = 0;
-	if (position < m_capacity)
+	if (position <= m_position)
 	{
 		m_position = position;
 		int j = 0;
 		while(m_position < position+dataSize && m_position < m_capacity)
 		{
-			m_data[m_position] = (char*)buffer[j];
+			m_data[m_position] = *((const char*)data+j);
 			++retVal;
 			++m_position;
 			++j;
@@ -83,19 +76,18 @@ unsigned int memPage_t::p_write(const char* data, unsigned int dataSize, unsigne
 	}
 	m_dataSize += retVal;
 	return retVal;
-
 }
 	
 unsigned int memPage_t::p_read(void* buffer, unsigned int dataSize, unsigned int position)
 {
 	int retVal = 0;
-	if (position < m_capacity)
+	if (position <= m_position)
 	{
 		m_position = position;
 		int j = 0;
 		while(m_position < position+dataSize && m_position < m_capacity)
 		{
-			(char*)buffer[j] = m_data[m_position];
+			*((char*)buffer+j) = m_data[m_position];
 			++retVal;
 			++m_position;
 			++j;

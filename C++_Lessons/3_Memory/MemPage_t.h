@@ -9,7 +9,6 @@ public:
 	memPage_t(unsigned int capacity);
 	~memPage_t();
 
-	virtual void setPosition(unsigned int position);
 	virtual unsigned int write(const void* data, unsigned int dataSize);
 	virtual unsigned int write(const void* data, unsigned int dataSize, unsigned int position);
 	virtual unsigned int read(void* buffer, unsigned int dataSize);
@@ -18,12 +17,13 @@ public:
 	unsigned int getCapacity() const;
 
 	static void setDefCapacity(unsigned int capacity);
+	static unsigned int getDefCapacity();
 
 private:
 	memPage_t(memPage_t& page);
 	void operator=(memPage_t& page);
 
-	unsigned int p_write(const char* data, unsigned int dataSize, unsigned int position);
+	unsigned int p_write(const void* data, unsigned int dataSize, unsigned int position);
 	unsigned int p_read(void* buffer, unsigned int dataSize, unsigned int position);
 
 	char* m_data;
