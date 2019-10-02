@@ -50,10 +50,10 @@ void memPool_t::write(const char* data, unsigned int dataSize, unsigned int posi
 
 char* memPool_t::read(unsigned int dataSize)
 {
-
+	return 0;
 }
 
 char* memPool_t::read(unsigned int dataSize, unsigned int position)
 {
-	
+	return 0;
 }

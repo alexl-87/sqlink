@@ -83,16 +83,15 @@ unsigned int memPage_t::p_read(void* buffer, unsigned int dataSize, unsigned int
 	int retVal = 0;
 	if (position <= m_position)
 	{
-		m_position = position;
 		int j = 0;
-		while(m_position < position+dataSize && m_position < m_capacity)
+		while(position < position+dataSize && position <= m_position)
 		{
-			*((char*)buffer+j) = m_data[m_position];
+			*((char*)buffer+j) = m_data[position];
 			++retVal;
-			++m_position;
+			++position;
 			++j;
 		}
-
+		m_position = position;
 	}
 	return retVal;
 }
