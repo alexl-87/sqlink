@@ -17,7 +17,7 @@ public:
 
 	bool isFull() const;
 
-	unsigned int getSize() const;
+	unsigned int getDataSize() const;
 
 	void write(const char* data, unsigned int dataSize);
 	void write(const char* data, unsigned int dataSize, unsigned int position);
@@ -29,6 +29,7 @@ private:
 	void operator=(memPool_t& pool){}
 
 	vector<memPage_t*> v;
+	unsigned int numOfPages;
 };
 
 #endif

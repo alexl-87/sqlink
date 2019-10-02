@@ -13,7 +13,7 @@ public:
 
 	bool isFull() const;
 
-	unsigned int getSize() const;
+	unsigned int getDataSize() const;
 	unsigned int getCapacity() const;
 
 	void write(const char* data, unsigned int dataSize);

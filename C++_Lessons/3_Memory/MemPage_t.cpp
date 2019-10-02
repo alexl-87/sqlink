@@ -38,7 +38,7 @@ bool memPage_t::isFull() const
 	return m_memoryFull;
 }
 
-unsigned int memPage_t::getSize() const
+unsigned int memPage_t::getDataSize() const
 {
 	return m_dataSize;
 }
@@ -77,7 +77,7 @@ void memPage_t::p_write(const char* data, unsigned int dataSize, unsigned int po
 {
 	if(m_capacity - position <= dataSize)
 	{
-		for (int i = m_position, j = 0; i < dataSize; ++i, ++j)
+		for (unsigned int i = m_position, j = 0; i < dataSize; ++i, ++j)
 		{
 			m_data[i] = data[j];
 		}
@@ -91,7 +91,7 @@ void memPage_t::p_write(const char* data, unsigned int dataSize, unsigned int po
 char* memPage_t::p_read(unsigned int dataSize, unsigned int position)
 {
 	char* retVal = new char[dataSize];
-	for (int i = m_position, j = 0; i < dataSize; ++i, ++j)
+	for (unsigned int i = m_position, j = 0; i < dataSize; ++i, ++j)
 	{
 		if (i < m_capacity)
 		{
@@ -103,7 +103,7 @@ char* memPage_t::p_read(unsigned int dataSize, unsigned int position)
 			retVal[j] = 0;
 			m_memoryFull = false;
 			m_position = 0;
-			m_data - 0;
+			m_data = 0;
 			return retVal;
 		}
 	}
