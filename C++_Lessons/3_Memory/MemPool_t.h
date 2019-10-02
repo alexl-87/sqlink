@@ -1,12 +1,16 @@
 #ifndef MemPool_t
 #define MemPool_t
+#include <vector>
+#include "MemPage_t.h"
+#include "MemManager_t.h"
+using namespace std;
 
-class memPool_t
+class memPool_t : public memManager_t
 {
 public:
+
 	memPool_t();
 	~memPool_t();
-
 
 	unsigned int getPosition() const;
 	void setPosition(unsigned int position);
@@ -15,19 +19,16 @@ public:
 
 	unsigned int getSize() const;
 
-
-	void write(void* data, unsigned int dataSize);
-	void write(void* data, unsigned int dataSize, unsigned int position);
-	void* read(void* data, unsigned int dataSize) const;
-	void* read(void* data, unsigned int dataSize, unsigned int position) const;
-
-
+	void write(const char* data, unsigned int dataSize);
+	void write(const char* data, unsigned int dataSize, unsigned int position);
+	char* read(unsigned int dataSize);
+	char* read(unsigned int dataSize, unsigned int position);
 
 private:
 	memPool_t(memPool_t& pool){}
-	void operator=(){}
+	void operator=(memPool_t& pool){}
 
-	std::vector<Page_t*> vector;
+	vector<memPage_t*> v;
 };
 
 #endif

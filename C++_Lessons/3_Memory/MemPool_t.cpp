@@ -31,22 +31,22 @@ unsigned int memPool_t::getSize() const
 
 }
 
-void memPool_t::write(void* data, unsigned int dataSize)
+void memPool_t::write(const char* data, unsigned int dataSize)
 {
 
 }
 
-void memPool_t::write(void* data, unsigned int dataSize, unsigned int position)
+void memPool_t::write(const char* data, unsigned int dataSize, unsigned int position)
 {
 
 }
 
-void* memPool_t::read(void* data, unsigned int dataSize) const
+char* memPool_t::read(unsigned int dataSize)
 {
 
 }
 
-void* memPool_t::read(void* data, unsigned int dataSize, unsigned int position) const
+char* memPool_t::read(unsigned int dataSize, unsigned int position)
 {
 	
 }
