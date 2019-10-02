@@ -30,22 +30,22 @@ unsigned int memPage_t::getCapacity() const
 
 unsigned int memPage_t::write(const void* data, unsigned int dataSize)
 {
-	return p_write(data, dataSize, m_position);
+	return memCopyWrite(data, dataSize, m_position);
 }
 
 unsigned int memPage_t::write(const void* data, unsigned int dataSize, unsigned int position)
 {
-	return p_write(data, dataSize, position);
+	return memCopyWrite(data, dataSize, position);
 }
 
 unsigned int memPage_t::read(void* buffer, unsigned int dataSize)
 {
-	return p_read(buffer, dataSize, m_position);
+	return memCopyRead(buffer, dataSize, m_position);
 }
 
 unsigned int memPage_t::read(void* buffer, unsigned int dataSize, unsigned int position)
 {
-	return p_read(buffer, dataSize, position);
+	return memCopyRead(buffer, dataSize, position);
 }
 
 void memPage_t::setDefCapacity(unsigned int capacity)
@@ -58,7 +58,7 @@ unsigned int memPage_t::getDefCapacity()
 	return m_defCapacity;
 }
 
-unsigned int memPage_t::p_write(const void* data, unsigned int dataSize, unsigned int position)
+unsigned int memPage_t::memCopyWrite(const void* data, unsigned int dataSize, unsigned int position)
 {
 	unsigned int retVal = 0;
 	if (position <= m_position)
@@ -78,7 +78,7 @@ unsigned int memPage_t::p_write(const void* data, unsigned int dataSize, unsigne
 	return retVal;
 }
 	
-unsigned int memPage_t::p_read(void* buffer, unsigned int dataSize, unsigned int position)
+unsigned int memPage_t::memCopyRead(void* buffer, unsigned int dataSize, unsigned int position)
 {
 	unsigned int retVal = 0;
 	if (position <= m_position)

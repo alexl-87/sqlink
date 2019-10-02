@@ -20,11 +20,11 @@ public:
 	static unsigned int getDefCapacity();
 
 private:
-	memPage_t(memPage_t& page){}
-	void operator=(memPage_t& page){}
+	memPage_t(memPage_t& page);
+	void operator=(memPage_t& page);
 
-	unsigned int p_write(const void* data, unsigned int dataSize, unsigned int position);
-	unsigned int p_read(void* buffer, unsigned int dataSize, unsigned int position);
+	unsigned int memCopyWrite(const void* data, unsigned int dataSize, unsigned int position);
+	unsigned int memCopyRead(void* buffer, unsigned int dataSize, unsigned int position);
 
 	char* m_data;
 	const unsigned int m_capacity;

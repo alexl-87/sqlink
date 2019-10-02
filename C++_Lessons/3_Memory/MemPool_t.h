@@ -23,11 +23,13 @@ private:
 	memPool_t(memPool_t& pool){}
 	void operator=(memPool_t& pool){}
 
-	unsigned int p_write(const void* data, unsigned int dataSize, unsigned int position);
-	unsigned int p_read(void* buffer, unsigned int dataSize, unsigned int position);
-	
+	unsigned int memCopyWrite(const void* data, unsigned int dataSize, unsigned int position);
+	unsigned int memCopyRead(void* buffer, unsigned int dataSize, unsigned int position);
+	int getPageIndex(unsigned int* position);
+
 	vector<memPage_t*> v;
-	unsigned int capacity;
+	unsigned int m_capacity;
+	unsigned int m_numOfPages;
 };
 
 #endif

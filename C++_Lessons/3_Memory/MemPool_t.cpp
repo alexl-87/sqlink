@@ -7,6 +7,9 @@ memPool_t::memPool_t()
 	m_memoryFull = false;
 	m_position = 0;
 	m_dataSize = 0;
+	m_capacity = page->getCapacity();
+	m_numOfPages = 1;
+
 }
 
 memPool_t::~memPool_t()
@@ -17,40 +20,81 @@ memPool_t::~memPool_t()
 	}
 }
 
-void memPool_t::write(const char* data, unsigned int dataSize)
+unsigned int memPool_t::write(const void* data, unsigned int dataSize)
 {
-
+	return memCopyWrite(data, dataSize, m_position);
 }
 
-void memPool_t::write(const char* data, unsigned int dataSize, unsigned int position)
+unsigned int memPool_t::write(const void* data, unsigned int dataSize, unsigned int position)
 {
-
+	return memCopyWrite(data, dataSize, position);
 }
 
-char* memPool_t::read(unsigned int dataSize)
+
+unsigned int memPool_t::read(void* buffer, unsigned int dataSize)
 {
 	return 0;
 }
 
-char* memPool_t::read(unsigned int dataSize, unsigned int position)
+
+unsigned int memPool_t::read(void* buffer, unsigned int dataSize, unsigned int position)
 {
 	return 0;
 }
 
-unsigned int p_write(const void* data, unsigned int dataSize, unsigned int position)
+unsigned int memPool_t::memCopyWrite(const void* data, unsigned int dataSize, unsigned int position)
 {
-	unsigned int retVal = 0;
+	unsigned int retVal = 0, result = 0;
+
 	if (position <= m_position)
 	{
-		int index = getPageIndex(position);
-		if (index >= 0)
+		int index = getPageIndex(&position);
+		if (index < (int)v.size())
 		{
-			position = position
+			result = v[index]->write(data, dataSize, position);
+
+			m_position += result;
+			m_dataSize += result;
+			retVal += result;
+			dataSize -= result;
+		}
+		position = 0;
+		while(dataSize > 0 || result > 0)
+		{
+			data = (char*)data+result;
+			memPage_t* page = new memPage_t;
+			v.insert(v.end(), page);
+			result = v[v.size()-1]->write(data, dataSize, position);
+
+			dataSize -= result;
+			retVal += result;
+			m_position += result;
+			m_dataSize += result;
+			++m_numOfPages;
 		}
 	}
+	return retVal;
 }
 
-unsigned int p_read(void* buffer, unsigned int dataSize, unsigned int position)
+unsigned int memPool_t::memCopyRead(void* buffer, unsigned int dataSize, unsigned int position)
 {
+	return 0;
+}
 
+int memPool_t::getPageIndex(unsigned int* position)
+{
+	int i = 0;
+	for (i = 0; i < (int)v.size(); ++i)
+	{
+		if(*position >= v[i]->getCapacity())
+		{
+			*position -= v[i]->getCapacity();
+		}
+		else
+		{
+			return i;
+		}
+	}
+
+	return i;
 }
