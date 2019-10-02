@@ -23,7 +23,6 @@ memPage_t::~memPage_t()
 	delete[] m_data;
 }
 
-
 void memPage_t::setPosition(unsigned int position)
 {
 	if (position < m_capacity)
@@ -41,12 +40,12 @@ unsigned int memPage_t::getCapacity() const
 	return m_capacity;
 }
 
-void memPage_t::write(const void* data, unsigned int dataSize)
+unsigned int memPage_t::write(const void* data, unsigned int dataSize)
 {
 	p_write(data, dataSize, m_position);
 }
 
-void memPage_t::write(const void* data, unsigned int dataSize, unsigned int position)
+unsigned int memPage_t::write(const void* data, unsigned int dataSize, unsigned int position)
 {
 	p_write(data, dataSize, position);
 }
@@ -66,19 +65,25 @@ void memPage_t::setDefCapacity(unsigned int capacity)
 	m_defCapacity = capacity;
 }
 
-void memPage_t::p_write(const char* data, unsigned int dataSize, unsigned int position)
+unsigned int memPage_t::p_write(const char* data, unsigned int dataSize, unsigned int position)
 {
-	if(m_capacity - position <= dataSize)
+	int retVal = 0;
+	if (position < m_capacity)
 	{
-		for (unsigned int i = m_position, j = 0; i < dataSize; ++i, ++j)
+		m_position = position;
+		int j = 0;
+		while(m_position < position+dataSize && m_position < m_capacity)
 		{
-			m_data[i] = data[j];
+			m_data[m_position] = (char*)buffer[j];
+			++retVal;
+			++m_position;
+			++j;
 		}
-		m_position += dataSize;
-		m_dataSize += dataSize;
 
-		m_memoryFull = (m_position == m_capacity)?true:false;
 	}
+	m_dataSize += retVal;
+	return retVal;
+
 }
 	
 unsigned int memPage_t::p_read(void* buffer, unsigned int dataSize, unsigned int position)
@@ -86,16 +91,16 @@ unsigned int memPage_t::p_read(void* buffer, unsigned int dataSize, unsigned int
 	int retVal = 0;
 	if (position < m_capacity)
 	{
-		int i = position, j = 0;
-		while(i < dataSize && i < m_capacity)
+		m_position = position;
+		int j = 0;
+		while(m_position < position+dataSize && m_position < m_capacity)
 		{
-			*(char*)buffer[j] = *m_data[i];
+			(char*)buffer[j] = m_data[m_position];
 			++retVal;
-			++i;
+			++m_position;
 			++j;
 		}
 
 	}
-	m_dataSize += retVal;
 	return retVal;
 }

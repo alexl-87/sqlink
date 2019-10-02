@@ -7,8 +7,8 @@ class memManager_t
 public:
 	memManager_t(){}
 	virtual ~memManager_t() = 0;
-	virtual void write(const void* data, unsigned int dataSize) = 0;
-	virtual void write(const void* data, unsigned int dataSize, unsigned int position) = 0;
+	virtual unsigned int write(const void* data, unsigned int dataSize) = 0;
+	virtual unsigned int write(const void* data, unsigned int dataSize, unsigned int position) = 0;
 	virtual unsigned int read(void* buffer, unsigned int dataSize) = 0;
 	virtual unsigned int read(void* buffer, unsigned int dataSize, unsigned int position) = 0;
 	virtual void setPosition(unsigned int position) = 0;
