@@ -55,21 +55,23 @@ int main(int argc, char const *argv[])
 				break;
 
 			case 8:
-				getPosTest();
+				setPosTest();
 				break;
 
 			case 9:
-				setPosTest();
+				getPosTest();
 				break;
 
 			case 10:
 				getDataSizeTest();
 				break;
 
+			default: goto END_TEST;
+
 
 		}
 	}
-
+END_TEST:
 	return 0;
 }
 
@@ -116,6 +118,8 @@ void writeTest()
 		cin>>ch;
 		page.write((void*) &ch, sizeof(char));
 		break;
+
+		default: break;
 	}
 }
 
@@ -166,6 +170,8 @@ void writePosTest()
 		cin>>ch;
 		page.write((void*) &ch, sizeof(char), position);
 		break;
+
+		default: break;
 	}
 }
 
@@ -182,81 +188,128 @@ void readTest()
 		double doub; char ch;
 
 		case 1:
-		cout<<"Insert value:"<<endl;
 		page.read((void*) &sh, sizeof(short), position);
 		cout<< sh<<endl;
 		break;
 
 		case 2:
-		cout<<"Insert value:"<<endl;
 		page.read((void*) &in, sizeof(int), position);
 		cout<< in<<endl;
 		break;
 
 		case 3:
-		cout<<"Insert value:"<<endl;
 		page.read((void*) &lon, sizeof(long), position);
 		cout<<lon <<endl;
 		break;
 
 		case 4:
-		cout<<"Insert value:"<<endl;
 		page.read((void*) &fl, sizeof(float), position);
 		cout<<fl <<endl;
 		break;
 
 		case 5:
-		cout<<"Insert value:"<<endl;
 		page.read((void*) &doub, sizeof(double), position);
 		cout<<doub <<endl;
 		break;
 
 		case 6:
-		cout<<"Insert value:"<<endl;
 		page.read((void*) &ch, sizeof(char), position);
 		cout<<ch <<endl;
 		break;
+
+		default: break;
 	}
 }
 
 void readPostest()
 {
+	writeMenu();
 
+	switch(sc)
+	{
+		short sh; int in; long lon; float fl;
+		double doub; char ch;
+
+		case 1:
+		page.read((void*) &sh, sizeof(short));
+		cout<< sh<<endl;
+		break;
+
+		case 2:
+		page.read((void*) &in, sizeof(int));
+		cout<< in<<endl;
+		break;
+
+		case 3:
+		page.read((void*) &lon, sizeof(long));
+		cout<<lon <<endl;
+		break;
+
+		case 4:
+		page.read((void*) &fl, sizeof(float));
+		cout<<fl <<endl;
+		break;
+
+		case 5:
+		page.read((void*) &doub, sizeof(double));
+		cout<<doub <<endl;
+		break;
+
+		case 6:
+		page.read((void*) &ch, sizeof(char));
+		cout<<ch <<endl;
+		break;
+
+		default: break;
+	}
 }
 
 void setDefCapacityTest()
 {
-
+	cout<<"Insert capacity:"<<endl;
+	unsigned int num = 0;
+	cin>>num;
+	memPage_t::setDefCapacity(num);
 }
 
 void getDefCapacityTest()
 {
-
+	cout<<memPage_t::getDefCapacity()<<endl;
 }
 
 void getCapacityTest()
 {
-
+	cout<<page.getCapacity()<<endl;
 }
 
 void getPosTest()
 {
-
+	cout<<page.getPosition()<<endl;
 }
 
 void setPosTest()
 {
-
+	cout<<"Insert position:"<<endl;
+	unsigned int num = 0;
+	cin>>num;
+	try
+	{
+		page.setPosition(num);
+	}
+	catch(...)
+	{
+		cout<<"Illegal position"<<endl;
+	}
 }
 
 void getDataSizeTest()
 {
-
+	cout<<page.getDataSize()<<endl;
 }
 
 void printMenu()
 {
-	cout<<"1 - Write\t2 - Write in pos\t3 - Read\t4 - Read in pos\n"
+	cout<<"1 - Write\t\t2 - Write in pos\t3 - Read\t\t4 - Read in pos\n"
 		<<"5 - set def capacity\t6 - get def cpacity\t7 - Get capacity\n"
 		<<"8 - Set position\t9 - Get position\t10 - Get data size"<<endl;
 		cin>>sc;
@@ -264,7 +317,7 @@ void printMenu()
 
 void writeMenu()
 {
-	cout<<"1 - short\t2 - int\t3 - long\n"
+	cout<<"1 - short\t2 - int\t\t3 - long\n"
 		<<"4 - float\t5 - double\t6 - char"<<endl;
 	cin>>sc;
 }

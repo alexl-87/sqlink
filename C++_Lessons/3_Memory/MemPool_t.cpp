@@ -17,27 +17,6 @@ memPool_t::~memPool_t()
 	}
 }
 
-
-unsigned int memPool_t::getPosition() const
-{
-	return m_position;
-}
-
-void memPool_t::setPosition(unsigned int position)
-{
-	m_position = position;
-}
-
-bool memPool_t::isFull() const
-{
-	return m_memoryFull;
-}
-
-unsigned int memPool_t::getDataSize() const
-{
-	return m_dataSize;
-}
-
 void memPool_t::write(const char* data, unsigned int dataSize)
 {
 
@@ -56,4 +35,22 @@ char* memPool_t::read(unsigned int dataSize)
 char* memPool_t::read(unsigned int dataSize, unsigned int position)
 {
 	return 0;
+}
+
+unsigned int p_write(const void* data, unsigned int dataSize, unsigned int position)
+{
+	unsigned int retVal = 0;
+	if (position <= m_position)
+	{
+		int index = getPageIndex(position);
+		if (index >= 0)
+		{
+			position = position
+		}
+	}
+}
+
+unsigned int p_read(void* buffer, unsigned int dataSize, unsigned int position)
+{
+
 }

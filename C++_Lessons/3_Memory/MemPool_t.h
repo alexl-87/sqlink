@@ -12,24 +12,22 @@ public:
 	memPool_t();
 	~memPool_t();
 
-	unsigned int getPosition() const;
-	void setPosition(unsigned int position);
+	virtual unsigned int write(const void* data, unsigned int dataSize);
+	virtual unsigned int write(const void* data, unsigned int dataSize, unsigned int position);
+	virtual unsigned int read(void* buffer, unsigned int dataSize);
+	virtual unsigned int read(void* buffer, unsigned int dataSize, unsigned int position);
 
-	bool isFull() const;
-
-	unsigned int getDataSize() const;
-
-	void write(const char* data, unsigned int dataSize);
-	void write(const char* data, unsigned int dataSize, unsigned int position);
-	char* read(unsigned int dataSize);
-	char* read(unsigned int dataSize, unsigned int position);
+	unsigned int getCapacity() const;
 
 private:
 	memPool_t(memPool_t& pool){}
 	void operator=(memPool_t& pool){}
 
+	unsigned int p_write(const void* data, unsigned int dataSize, unsigned int position);
+	unsigned int p_read(void* buffer, unsigned int dataSize, unsigned int position);
+	
 	vector<memPage_t*> v;
-	unsigned int numOfPages;
+	unsigned int capacity;
 };
 
 #endif

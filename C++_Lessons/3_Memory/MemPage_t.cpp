@@ -60,7 +60,7 @@ unsigned int memPage_t::getDefCapacity()
 
 unsigned int memPage_t::p_write(const void* data, unsigned int dataSize, unsigned int position)
 {
-	int retVal = 0;
+	unsigned int retVal = 0;
 	if (position <= m_position)
 	{
 		m_position = position;
@@ -80,7 +80,7 @@ unsigned int memPage_t::p_write(const void* data, unsigned int dataSize, unsigne
 	
 unsigned int memPage_t::p_read(void* buffer, unsigned int dataSize, unsigned int position)
 {
-	int retVal = 0;
+	unsigned int retVal = 0;
 	if (position <= m_position)
 	{
 		int j = 0;
