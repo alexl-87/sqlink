@@ -8,24 +8,20 @@ public:
 	memPage_t(unsigned int capacity);
 	~memPage_t();
 
-	unsigned int getPosition() const;
-	void setPosition(unsigned int position);
+	virtual void setPosition(unsigned int position);
+	virtual void write(const void* data, unsigned int dataSize);
+	virtual void write(const void* data, unsigned int dataSize, unsigned int position);
+	virtual unsigned int read(void* buffer, unsigned int dataSize);
+	virtual unsigned int read(void* buffer, unsigned int dataSize, unsigned int position);
 
-	bool isFull() const;
-
-	unsigned int getDataSize() const;
 	unsigned int getCapacity() const;
-
-	void write(const char* data, unsigned int dataSize);
-	void write(const char* data, unsigned int dataSize, unsigned int position);
-	char* read(unsigned int dataSize);
-	char* read(unsigned int dataSize, unsigned int position);
 
 	static void setDefCapacity(unsigned int capacity);
 
 private:
 	memPage_t(memPage_t& page);
 	void operator=(memPage_t& page);
+	
 	void p_write(const char* data, unsigned int dataSize, unsigned int position);
 	char* p_read(unsigned int dataSize, unsigned int position);
 

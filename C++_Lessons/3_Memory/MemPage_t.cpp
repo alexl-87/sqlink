@@ -23,24 +23,17 @@ memPage_t::~memPage_t()
 	delete[] m_data;
 }
 
-unsigned int memPage_t::getPosition() const
-{
-	return m_position;
-}
 
 void memPage_t::setPosition(unsigned int position)
 {
-	m_position = position;
-}
-
-bool memPage_t::isFull() const
-{
-	return m_memoryFull;
-}
-
-unsigned int memPage_t::getDataSize() const
-{
-	return m_dataSize;
+	if (position < m_capacity)
+	{
+		m_position = position;
+	}
+	else
+	{
+		throw -1;
+	}
 }
 
 unsigned int memPage_t::getCapacity() const
@@ -48,22 +41,22 @@ unsigned int memPage_t::getCapacity() const
 	return m_capacity;
 }
 
-void memPage_t::write(const char* data, unsigned int dataSize)
+void memPage_t::write(const void* data, unsigned int dataSize)
 {
 	p_write(data, dataSize, m_position);
 }
 
-void memPage_t::write(const char* data, unsigned int dataSize, unsigned int position)
+void memPage_t::write(const void* data, unsigned int dataSize, unsigned int position)
 {
 	p_write(data, dataSize, position);
 }
 
-char* memPage_t::read(unsigned int dataSize)
+unsigned int memPage_t::read(void* buffer, unsigned int dataSize)
 {
 	return p_read(dataSize, m_position);
 }
 
-char* memPage_t::read(unsigned int dataSize, unsigned int position)
+unsigned int memPage_t::read(void* buffer, unsigned int dataSize, unsigned int position)
 {
 	return p_read(dataSize, position);
 }
@@ -88,28 +81,21 @@ void memPage_t::p_write(const char* data, unsigned int dataSize, unsigned int po
 	}
 }
 	
-char* memPage_t::p_read(unsigned int dataSize, unsigned int position)
+unsigned int memPage_t::p_read(void* buffer, unsigned int dataSize, unsigned int position)
 {
-	char* retVal = new char[dataSize];
-	for (unsigned int i = m_position, j = 0; i < dataSize; ++i, ++j)
+	int retVal = 0;
+	if (position < m_capacity)
 	{
-		if (i < m_capacity)
+		int i = position, j = 0;
+		while(i < dataSize && i < m_capacity)
 		{
-			retVal[j] = m_data[i];
+			*(char*)buffer[j] = *m_data[i];
+			++retVal;
+			++i;
+			++j;
 		}
 
-		else
-		{
-			retVal[j] = 0;
-			m_memoryFull = false;
-			m_position = 0;
-			m_data = 0;
-			return retVal;
-		}
 	}
-
-	m_memoryFull = false;
-	m_position -= dataSize;
-	m_dataSize -= dataSize;
+	m_dataSize += retVal;
 	return retVal;
 }
