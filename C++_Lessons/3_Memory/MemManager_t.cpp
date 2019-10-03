@@ -4,7 +4,7 @@ memManager_t::~memManager_t(){}
 
 unsigned int memManager_t::getDataSize() const
 {
-	return m_dataSize;
+	return m_position;
 }
 
 bool memManager_t::isFull() const

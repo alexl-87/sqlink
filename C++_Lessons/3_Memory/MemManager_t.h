@@ -20,7 +20,6 @@ public:
 protected:
 	bool m_memoryFull;
 	unsigned int m_position;
-	unsigned int m_dataSize;
 
 private:
 	memManager_t(memManager_t& manager){}

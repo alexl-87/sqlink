@@ -7,7 +7,6 @@ memPage_t::memPage_t():m_capacity(m_defCapacity)
 	m_data = new char[m_capacity];
 	m_memoryFull = false;
 	m_position = 0;
-	m_dataSize = 0;
 }
 
 memPage_t::memPage_t(unsigned int capacity):m_capacity(capacity)
@@ -15,7 +14,6 @@ memPage_t::memPage_t(unsigned int capacity):m_capacity(capacity)
 	m_data = new char[m_capacity];
 	m_memoryFull = false;
 	m_position = 0;
-	m_dataSize = 0;
 }
 
 memPage_t::~memPage_t()
@@ -72,9 +70,7 @@ unsigned int memPage_t::memCopyWrite(const void* data, unsigned int dataSize, un
 			++m_position;
 			++j;
 		}
-
 	}
-	m_dataSize += retVal;
 	return retVal;
 }
 	

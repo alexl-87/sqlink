@@ -29,7 +29,6 @@ private:
 
 	vector<memPage_t*> v;
 	unsigned int m_capacity;
-	unsigned int m_numOfPages;
 };
 
 #endif

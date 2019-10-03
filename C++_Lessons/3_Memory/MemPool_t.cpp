@@ -8,7 +8,6 @@ memPool_t::memPool_t()
 	m_position = 0;
 	m_dataSize = 0;
 	m_capacity = page->getCapacity();
-	m_numOfPages = 1;
 
 }
 
@@ -49,28 +48,22 @@ unsigned int memPool_t::memCopyWrite(const void* data, unsigned int dataSize, un
 	if (position <= m_position)
 	{
 		int index = getPageIndex(&position);
-		if (index < (int)v.size())
-		{
-			result = v[index]->write(data, dataSize, position);
-
-			m_position += result;
-			m_dataSize += result;
-			retVal += result;
-			dataSize -= result;
-		}
-		position = 0;
 		while(dataSize > 0 || result > 0)
 		{
 			data = (char*)data+result;
-			memPage_t* page = new memPage_t;
-			v.insert(v.end(), page);
-			result = v[v.size()-1]->write(data, dataSize, position);
+			if (index >= v.size())
+			{
+				memPage_t* page = new memPage_t;
+				v.insert(v.end(), page);
+			}
+			
+			result = v[index]->write(data, dataSize, position);
 
 			dataSize -= result;
 			retVal += result;
 			m_position += result;
-			m_dataSize += result;
-			++m_numOfPages;
+			++index;
+			position = 0;
 		}
 	}
 	return retVal;
