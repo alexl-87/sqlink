@@ -3,24 +3,25 @@
 #include <iostream>
 using namespace std;
 
-void writeTest();
-void writePosTest();
-void readTest();
-void readPostest();
-void setDefCapacityTest();
-void getDefCapacityTest();
-void getCapacityTest();
-void getPosTest();
-void setPosTest();
-void getDataSizeTest();
+void writeTest(memManager_t& manager);
+void writePosTest(memManager_t& manager);
+void readTest(memManager_t& manager);
+void readPostest(memManager_t& manager);
+void setDefCapacityTest(memManager_t& manager);
+void getDefCapacityTest(memManager_t& manager);
+void getCapacityTest(memManager_t& manager);
+void getPosTest(memManager_t& manager);
+void setPosTest(memManager_t& manager);
+void getDataSizeTest(memManager_t& manager);
 
 void printMenu();
 void writeMenu();
-memPage_t page;
+
 int sc = 0;
 int main(int argc, char const *argv[])
 {
-	
+	memPage_t page;
+	memPool_t pool;
 	while(true)
 	{
 		printMenu();
@@ -28,42 +29,42 @@ int main(int argc, char const *argv[])
 		switch(sc)
 		{
 			case 1:
-				writeTest();
+				writeTest(&page);
 				break;
 			case 2:
-				writePosTest();
+				writePosTest(&page);
 				break;
 
 			case 3:	
-				readTest();
+				readTest(&page);
 				break;
 
 			case 4:
-				readPostest();
+				readPostest(&page);
 				break;
 
 			case 5:
-				setDefCapacityTest();
+				setDefCapacityTest(&page);
 				break;
 
 			case 6:
-				getDefCapacityTest();
+				getDefCapacityTest(&page);
 				break;
 
 			case 7:
-				getCapacityTest();
+				getCapacityTest(&page);
 				break;
 
 			case 8:
-				setPosTest();
+				setPosTest(&page);
 				break;
 
 			case 9:
-				getPosTest();
+				getPosTest(&page);
 				break;
 
 			case 10:
-				getDataSizeTest();
+				getDataSizeTest(&page);
 				break;
 
 			default: goto END_TEST;
@@ -75,7 +76,7 @@ END_TEST:
 	return 0;
 }
 
-void writeTest()
+void writeTest(&page)
 {
 	writeMenu();
 	switch(sc)
@@ -123,7 +124,7 @@ void writeTest()
 	}
 }
 
-void writePosTest()
+void writePosTest(&page)
 {
 	writeMenu();
 	unsigned int position;
@@ -175,7 +176,7 @@ void writePosTest()
 	}
 }
 
-void readTest()
+void readTest(&page)
 {
 	writeMenu();
 	unsigned int position;
@@ -188,32 +189,32 @@ void readTest()
 		double doub; char ch;
 
 		case 1:
-		page.read((void*) &sh, sizeof(short), position);
+		page->read((void*) &sh, sizeof(short), position);
 		cout<< sh<<endl;
 		break;
 
 		case 2:
-		page.read((void*) &in, sizeof(int), position);
+		page->read((void*) &in, sizeof(int), position);
 		cout<< in<<endl;
 		break;
 
 		case 3:
-		page.read((void*) &lon, sizeof(long), position);
+		page->read((void*) &lon, sizeof(long), position);
 		cout<<lon <<endl;
 		break;
 
 		case 4:
-		page.read((void*) &fl, sizeof(float), position);
+		page->read((void*) &fl, sizeof(float), position);
 		cout<<fl <<endl;
 		break;
 
 		case 5:
-		page.read((void*) &doub, sizeof(double), position);
+		page->read((void*) &doub, sizeof(double), position);
 		cout<<doub <<endl;
 		break;
 
 		case 6:
-		page.read((void*) &ch, sizeof(char), position);
+		page->read((void*) &ch, sizeof(char), position);
 		cout<<ch <<endl;
 		break;
 
@@ -221,7 +222,7 @@ void readTest()
 	}
 }
 
-void readPostest()
+void readPostest(&page)
 {
 	writeMenu();
 
@@ -231,32 +232,32 @@ void readPostest()
 		double doub; char ch;
 
 		case 1:
-		page.read((void*) &sh, sizeof(short));
+		page->read((void*) &sh, sizeof(short));
 		cout<< sh<<endl;
 		break;
 
 		case 2:
-		page.read((void*) &in, sizeof(int));
+		page->read((void*) &in, sizeof(int));
 		cout<< in<<endl;
 		break;
 
 		case 3:
-		page.read((void*) &lon, sizeof(long));
+		page->read((void*) &lon, sizeof(long));
 		cout<<lon <<endl;
 		break;
 
 		case 4:
-		page.read((void*) &fl, sizeof(float));
+		page->read((void*) &fl, sizeof(float));
 		cout<<fl <<endl;
 		break;
 
 		case 5:
-		page.read((void*) &doub, sizeof(double));
+		page->read((void*) &doub, sizeof(double));
 		cout<<doub <<endl;
 		break;
 
 		case 6:
-		page.read((void*) &ch, sizeof(char));
+		page->read((void*) &ch, sizeof(char));
 		cout<<ch <<endl;
 		break;
 
@@ -264,7 +265,7 @@ void readPostest()
 	}
 }
 
-void setDefCapacityTest()
+void setDefCapacityTest(&page)
 {
 	cout<<"Insert capacity:"<<endl;
 	unsigned int num = 0;
@@ -272,29 +273,29 @@ void setDefCapacityTest()
 	memPage_t::setDefCapacity(num);
 }
 
-void getDefCapacityTest()
+void getDefCapacityTest(&page)
 {
 	cout<<memPage_t::getDefCapacity()<<endl;
 }
 
-void getCapacityTest()
+void getCapacityTest(&page)
 {
-	cout<<page.getCapacity()<<endl;
+	cout<<page->getCapacity()<<endl;
 }
 
-void getPosTest()
+void getPosTest(&page)
 {
-	cout<<page.getPosition()<<endl;
+	cout<<page->getPosition()<<endl;
 }
 
-void setPosTest()
+void setPosTest(&page)
 {
 	cout<<"Insert position:"<<endl;
 	unsigned int num = 0;
 	cin>>num;
 	try
 	{
-		page.setPosition(num);
+		page->setPosition(num);
 	}
 	catch(...)
 	{
@@ -302,9 +303,9 @@ void setPosTest()
 	}
 }
 
-void getDataSizeTest()
+void getDataSizeTest(&page)
 {
-	cout<<page.getDataSize()<<endl;
+	cout<<page->getDataSize()<<endl;
 }
 
 void printMenu()
