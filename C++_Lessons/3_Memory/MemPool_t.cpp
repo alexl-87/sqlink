@@ -43,7 +43,7 @@ unsigned int memPool_t::read(void* buffer, unsigned int dataSize, unsigned int p
 
 unsigned int memPool_t::memCopyWrite(const void* data, unsigned int dataSize, unsigned int position)
 {
-	unsigned int retVal = 0, result = 0;
+	unsigned int retVal = 0, result = 1;
 
 	if (position <= m_position)
 	{
