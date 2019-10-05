@@ -13,7 +13,6 @@ public:
 	tExeption_t& operator=(const tExeption_t& exept);
 	~tExeption_t();
 
-
 	const PARAM_1& getParam_1() const;
 	const PARAM_2& getParam_2() const;
 	const PARAM_3& getParam_3() const;
