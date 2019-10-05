@@ -18,8 +18,8 @@ public:
 	S_ID getId()const;
 	void setId(S_ID id);
 	void addBuilding(building_t<class B_ID> building);
-	building_t<class B_ID> getBuilding()const;
-	building_t<B_ID> getBuilding(unsigned int index)const;
+	building_t<class B_ID>& getBuilding()const;
+	building_t<class B_ID>& getBuilding(unsigned int index)const;
 
 private:
 	S_ID m_id;
@@ -62,21 +62,24 @@ void street_t <S_ID>::setId(S_ID id)
 template <class S_ID>
 void street_t <S_ID>::addBuilding(building_t<class B_ID> building)
 {
-	m_v.insert(v.end(), building);
+	m_v.insert(m_v.end(), building);
 }
 
 template <class S_ID>
-building_t<B_ID> street_t <S_ID>::getBuilding()const
+building_t<class B_ID>& street_t<S_ID>::getBuilding()const
 {
 	if (m_v.size() > 0)
 	{
 		return m_v[m_v.size()-1];
 	}
-	return 0;
+	else
+	{
+		throw 0;
+	}
 }
 
 template <class S_ID>
-building_t<B_ID> street_t <S_ID>::getBuilding(unsigned int index)const
+building_t& <B_ID> street_t <S_ID>::getBuilding(unsigned int index)const
 {
 	if(index < m_v.size())
 	{
