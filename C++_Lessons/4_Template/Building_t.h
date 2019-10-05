@@ -8,11 +8,11 @@ public:
 
 	~building_t();
 	building_t(B_ID id);
-	building_t(const building_t& building);
-	building_t&  operator=(const building_t& building);
+	building_t(building_t& building);
+	building_t&  operator=(building_t& building);
 
 	void setID(B_ID id);
-	B_ID getID() const;
+	B_ID getID();
 
 
 private:
@@ -26,28 +26,26 @@ building_t<B_ID>::building_t(B_ID id)
 }
 
 template <class B_ID>
-building_t<B_ID>::building_t(const building_t& building)
+building_t<B_ID>::building_t(building_t& building)
 {
 	m_id = building.m_id;
 }
 
 template <class B_ID>
-building_t<B_ID>& building_t<B_ID>::operator=(const building_t& building)
+building_t<B_ID>& building_t<B_ID>::operator=(building_t& building)
 {
 	if(this != building)
 	{
 		m_id = building.m_id;
 	}
-
 	return this;
-	
 }
 
 template <class B_ID>
 building_t<B_ID>::~building_t(){}
 
 template <class B_ID>
-B_ID building_t<B_ID>::getID() const
+B_ID building_t<B_ID>::getID()
 {
 	return m_id;
 }
