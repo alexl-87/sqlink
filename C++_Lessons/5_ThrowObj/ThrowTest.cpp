@@ -55,7 +55,7 @@ void foo2()
 void foo3()
 {
 	
-	tExeption_t<int,  string, int> exept(6, __FILE__, __LINE__);
-	throw exept;
+	throw tExeption_t<int,  string, int> 
+			(6, __FILE__, __LINE__);
 }
 
