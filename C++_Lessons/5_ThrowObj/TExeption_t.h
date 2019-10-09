@@ -36,9 +36,8 @@ template <class PARAM_1, class PARAM_2, class PARAM_3>
 tExeption_t<PARAM_1, PARAM_2, PARAM_3>::tExeption_t(){}
 
 template <class PARAM_1, class PARAM_2, class PARAM_3>
-tExeption_t<PARAM_1, PARAM_2, PARAM_3>::tExeption_t(const PARAM_1& p1, const PARAM_2& p2, const PARAM_3& p3)
+tExeption_t<PARAM_1, PARAM_2, PARAM_3>::tExeption_t(const PARAM_1& p1, const PARAM_2& p2, const PARAM_3& p3):m_p1(p1)
 {
-	m_p1 = p1;
 	m_p2 = p2;
 	m_p3 = p3;
 }
