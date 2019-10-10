@@ -12,6 +12,8 @@ public:
 	bool operator==(const meeting_t& meeting) const;
 	bool operator>(const meeting_t& meeting) const;
 	bool operator<(const meeting_t& meeting) const;
+	bool operator>=(const meeting_t& meeting) const;
+	bool operator<=(const meeting_t& meeting) const;
 
 	inline void setStart(unsigned float upperBound);
 	inline void setEnd(unsigned float lowerBound);
