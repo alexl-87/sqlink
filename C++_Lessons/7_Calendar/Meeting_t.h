@@ -9,11 +9,8 @@ public:
 	meeting_t(unsigned float start, unsigned float end, const char* desctiption);
 	meeting_t(unsigned float start, unsigned float end, const string& desctiption);
 
-	bool operator==(const meeting_t& meeting) const;
 	bool operator>(const meeting_t& meeting) const;
 	bool operator<(const meeting_t& meeting) const;
-	bool operator>=(const meeting_t& meeting) const;
-	bool operator<=(const meeting_t& meeting) const;
 
 	inline void setStart(unsigned float upperBound);
 	inline void setEnd(unsigned float lowerBound);
