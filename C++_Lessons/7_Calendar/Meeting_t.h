@@ -28,6 +28,7 @@ public:
 	inline static unsigned float getLowerBound();
 
 private:
+	void operator=(const meeting_t& meeting){}
 	unsigned float m_start;
 	unsigned float m_end;
 	string m_desctiption;

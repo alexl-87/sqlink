@@ -19,7 +19,7 @@ public:
 	void eraseCalendar();
 
 private:
-	static unsigned int numOfMeetings;
+	unsigned int m_numOfMeetings;
 	map<float, MEETING*> m_meetings;
 };
 
