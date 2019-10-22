@@ -2,18 +2,19 @@
 #include <string>
 #include <vector>
 #include <typeinfo>
+#include <stdio.h>
 using namespace std;
-
-template <class T>
-void func(T t)
-{
-	cout << typeid(t).name() << endl;
-}
-
 
 int main(int argc, char const *argv[])
 {
-	short num = 99;
-	func<short>(num);
+	FILE* file = fopen("test.txt", "r");
+	int res = fprintf(file, "%s\n", "TEST" );
+	cout << res << endl;
+	// int num = 56;
+	// int num2 = 87;
+	// int res = fscanf(file, "%d", &num);
+	// res = fscanf(file, "%d", &num2);
+	// cout << num << "  " << num2 << "    " << res << "   " << feof(file) << endl;
 	return 0;
+
 }
