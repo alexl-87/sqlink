@@ -1,13 +1,19 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <typeinfo>
 using namespace std;
+
+template <class T>
+void func(T t)
+{
+	cout << typeid(t).name() << endl;
+}
+
 
 int main(int argc, char const *argv[])
 {
-	int k = 99;
-
-	//cin>>k;
-	cout << k << endl;
+	short num = 99;
+	func<short>(num);
 	return 0;
 }
