@@ -11,7 +11,6 @@ public:
 	virtual virtIO_t& operator<<(int num);
 
 private:
-
 	template <class P> 
 	void m_fprintf(P p, string& arg);
 
