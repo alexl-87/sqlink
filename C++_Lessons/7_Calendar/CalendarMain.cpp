@@ -33,7 +33,8 @@ int main(int argc, char const *argv[])
 			case 3:
 			cout<<"Insert start hour"<< endl;
 			cin >> start;
-			calendar.removeMeeting(start);
+			(calendar.removeMeeting(start))?
+			cout<<"Success\n"<<endl:cout<<"Fail\n"<<endl;
 			break;
 
 			case 5:
@@ -74,7 +75,7 @@ void printMenu()
 		<<"\n3 - Remove meeting\t4 - Delete meeting"
 		<<"\n5 - Get upper bound\t6 - Get lower bound"
 		<<"\n7 - Set upper bound\t8 - Set lower bound"
-		<<"\n9 - Clear calendar\t 10 - Print calendar" << endl;
+		<<"\n9 - Clear calendar\t10 - Print calendar" << endl;
 }
 
 void insertNewMeeting(calendar_t& calendar)
