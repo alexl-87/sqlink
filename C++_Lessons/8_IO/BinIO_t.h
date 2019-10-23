@@ -41,7 +41,7 @@ binIO_t& binIO_t::Read(P& p, unsigned int size)
 	}
 
 	int retval = fread((void*)&p, size, 1, m_file);
-	if (retval != 1)
+	if (retval <= 0)
 	{
 		m_status = virtIO_t::readErr_e;
 		throw tExeption_t<string,  string, int> 
@@ -62,7 +62,8 @@ binIO_t& binIO_t::Write(P p, unsigned int size)
 	}
 
 	int retval = fwrite((void*)&p, size, 1, m_file);
-	if (retval != 1)
+	fflush(m_file);
+	if (retval <= 0)
 	{
 		m_status = virtIO_t::writeErr_e;
 		throw tExeption_t<string,  string, int> 
