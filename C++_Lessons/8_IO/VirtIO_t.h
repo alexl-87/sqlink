@@ -22,7 +22,7 @@ public:
 	const string& 	getPath()const;
 
 	virtual ~virtIO_t() = 0;
-	virtual void fOpen(const string& path, mode _mode) = 0;
+	virtual void fOpen(const string& path, mode md) = 0;
 	virtual void setPosition(unsigned int position)=0;
 	virtual virtIO_t& operator>>(int& num)=0;
 	virtual virtIO_t& operator<<(int num)=0;
