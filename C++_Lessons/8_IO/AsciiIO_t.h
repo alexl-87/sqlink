@@ -27,7 +27,7 @@ private:
 template <class P> 
 void asciiIO_t::m_IO(P p, int num)
 {
-	else if(m_file != 0)
+	if(m_file != 0)
 	{
 		char c = *typeid(p).name();
 		string arg;
@@ -74,12 +74,13 @@ void asciiIO_t::m_IO(P p, int num)
 			}
 
 			int res = fprintf(m_file, arg.c_str() ,p);
-			
+
 			if(res < 0)
 			{
 				throw res;
 			}
 		}
+
 		else if(num == 1)
 		{
 			if(m_mode != r && m_mode != rp)
@@ -95,5 +96,10 @@ void asciiIO_t::m_IO(P p, int num)
 				throw res;
 			}
 		}
+	}
+	else
+	{
+		m_status = bad_access_e;
+		throw -1;
 	}
 }

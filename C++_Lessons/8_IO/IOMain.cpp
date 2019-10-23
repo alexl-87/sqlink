@@ -5,6 +5,7 @@
 using namespace std;
 int main(int argc, char const *argv[])
 {
+	asciiIO_t t;
 
 	return 0;
 }
