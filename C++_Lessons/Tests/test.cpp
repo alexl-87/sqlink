@@ -7,11 +7,8 @@ using namespace std;
 
 int main(int argc, char const *argv[])
 {
-
-	double num = 255.6;
-
-	char c = *typeid(num).name();
-	cout << c << endl;
+	FILE* file = fopen("test.txt", "r");
+	cout << file << endl;
 	return 0;
 
 }
