@@ -1,14 +1,14 @@
-#include "Bin_IO_t.h"
+#include "BinIO_t.h"
 #include <string>
 using namespace std;
-bin_IO_t::bin_IO_t()
+binIO_t::binIO_t()
 {
 	m_buffer = 0;
 	m_read = false;
 	m_write = false;
 }
 
-bin_IO_t::bin_IO_t(const string& path, const string& mode)
+binIO_t::binIO_t(const string& path, const string& mode)
 :virtIO_t(path, mode)
 {
 	m_buffer = 0;
@@ -16,28 +16,28 @@ bin_IO_t::bin_IO_t(const string& path, const string& mode)
 	m_write = false;
 }
 
-bin_IO_t::~bin_IO_t(){}
+binIO_t::~binIO_t(){}
 
 
-bin_IO_t& bin_IO_t::operator>>(int& num){return Read(num, sizeof(int));}
+binIO_t& binIO_t::operator>>(int& num){return Read(num, sizeof(int));}
 
-bin_IO_t& bin_IO_t::operator<<(int num){return Write(num, sizeof(int));}
+binIO_t& binIO_t::operator<<(int num){return Write(num, sizeof(int));}
 
-bin_IO_t& bin_IO_t::operator>>(void* Buffer)
+binIO_t& binIO_t::operator>>(void* Buffer)
 {
 	m_read = true;
 	m_buffer = Buffer;
 	return *this;
 }
 
-bin_IO_t& bin_IO_t::operator<<(const void* Buffer)
+binIO_t& binIO_t::operator<<(const void* Buffer)
 {
 	m_write = true;
 	m_buffer = (void*)Buffer;
 	return *this;
 }
 
-void bin_IO_t::operator,(unsigned int size)
+void binIO_t::operator,(unsigned int size)
 {
 	if (m_buffer != 0 && m_file != 0)
 	{

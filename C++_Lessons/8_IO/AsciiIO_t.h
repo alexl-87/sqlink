@@ -1,6 +1,7 @@
 #include "VirtIO_t.h"
 #include <stdio.h>
 #include <typeinfo>
+#include "TExeption_t.h"
 
 class asciiIO_t:public virtIO_t
 {
@@ -27,18 +28,24 @@ asciiIO_t& asciiIO_t::Read(P& p, const char* mode)
 {
 	if (m_file == 0)
 	{
-		m_status = virtIO_t::cant_open_file_e;
-		throw -1;
-	}
-	else if(fscanf(m_file, mode, &p) <= 0)
-	{
-		m_status = virtIO_t::readErr_e;
-		throw -1;
+		m_status = virtIO_t::cant_open_file_e;;
+		throw tExeption_t<string,  string, int> 
+		("*** m_file is NULL ***", __FILE__, __LINE__);
 	}
 	else
 	{
-		m_status = virtIO_t::ok_e;
-		return *this;
+		int retval = fscanf(m_file, mode, &p);
+		if(retval<=0)
+		{
+			m_status = virtIO_t::readErr_e;
+			throw tExeption_t<string,  string, int> 
+			("*** fscanf failed ***", __FILE__, __LINE__);
+		}
+		else
+		{
+			m_status = virtIO_t::ok_e;
+			return *this;
+		}
 	}
 }
 
@@ -48,12 +55,14 @@ asciiIO_t& asciiIO_t::Write(P p, const char* mode)
 	if (m_file == 0)
 	{
 		m_status = virtIO_t::cant_open_file_e;
-		throw -1;
+		throw tExeption_t<string,  string, int> 
+		("*** m_file is NULL ***", __FILE__, __LINE__);
 	}
 	else if(fprintf(m_file, mode, p) <= 0)
 	{
 		m_status = virtIO_t::readErr_e;
-		throw -1;
+		throw tExeption_t<string,  string, int> 
+		("*** fprintf failed ***", __FILE__, __LINE__);
 	}
 	else
 	{

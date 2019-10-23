@@ -1,6 +1,6 @@
 #ifndef VirtIO_t
 #define VirtIO_t
-
+#include "TExeption_t.h"
 #include <string>
 #include <stdio.h>
 using namespace std;

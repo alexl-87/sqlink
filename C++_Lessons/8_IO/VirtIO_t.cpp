@@ -8,13 +8,13 @@ virtIO_t::~virtIO_t()
 virtIO_t::virtIO_t()
 {
 	m_status = ok_e;
-	FILE* m_file = 0;
+	m_file = 0;
 }
 
 virtIO_t::virtIO_t(const string& path, const string& mode):m_path(path), m_mode(mode)
 {
 	m_status = ok_e;
-	FILE* m_file = 0;
+	m_file = 0;
 	Open(path, mode.c_str());
 }
 
@@ -40,7 +40,8 @@ void virtIO_t::Open(const string& path, const char* mode)
 	else
 	{
 		m_status = cant_open_file_e;
-		throw -1;
+		throw tExeption_t<string,  string, int> 
+		("Failed to open file", __FILE__, __LINE__);
 	}
 }	
 
