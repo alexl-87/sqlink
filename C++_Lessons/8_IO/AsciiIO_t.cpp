@@ -9,13 +9,13 @@ asciiIO_t::asciiIO_t(const string& path, const string& mode)
 asciiIO_t::~asciiIO_t(){}
 
 
-virtIO_t& asciiIO_t::operator>>(int& num)
+asciiIO_t& asciiIO_t::operator>>(int& num)
 {
 	return Read(num, "%d");
 
 }
 
-virtIO_t& asciiIO_t::operator<<(int num)
+asciiIO_t& asciiIO_t::operator<<(int num)
 {
 	return Write(num, "%d");
 }

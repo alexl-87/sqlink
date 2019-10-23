@@ -8,22 +8,22 @@ public:
 	asciiIO_t();
 	asciiIO_t(const string& path, const string& mode);
 	~asciiIO_t();
-	virtual virtIO_t& operator>>(int& num);
-	virtual virtIO_t& operator<<(int num);
+	virtual asciiIO_t& operator>>(int& num);
+	virtual asciiIO_t& operator<<(int num);
 
 private:
 	asciiIO_t(const asciiIO_t& a);
 	asciiIO_t& operator=(const asciiIO_t& a);
 
 	template <class P> 
-	virtIO_t& Read(P& p, const char* mode);
+	asciiIO_t& Read(P& p, const char* mode);
 
 	template <class P> 
-	virtIO_t& Write(P p, const char* mode);
+	asciiIO_t& Write(P p, const char* mode);
 };
 
 template <class P> 
-virtIO_t& asciiIO_t::Read(P& p, const char* mode)
+asciiIO_t& asciiIO_t::Read(P& p, const char* mode)
 {
 	if (m_file == 0)
 	{
@@ -43,7 +43,7 @@ virtIO_t& asciiIO_t::Read(P& p, const char* mode)
 }
 
 template <class P> 
-virtIO_t& asciiIO_t::Write(P p, const char* mode)
+asciiIO_t& asciiIO_t::Write(P p, const char* mode)
 {
 	if (m_file == 0)
 	{

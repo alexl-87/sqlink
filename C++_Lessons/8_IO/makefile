@@ -2,7 +2,7 @@ CC = g++
 
 CFLAGS = -ansi -pedantic -g
 
-SRCS = IOMain.cpp VirtIO_t.cpp AsciiIO_t.cpp
+SRCS = IOMain.cpp VirtIO_t.cpp AsciiIO_t.cpp BinIO_t.cpp
 
 OBJS = $(SRCS:.c=.o)
 
