@@ -8,7 +8,7 @@ class virtIO_t
 {
 public:
 
-	typedef enum {ok_e, cant_open_file_e, bad_access_e, writeErr_e, readErr_e, def_e}status;
+	typedef enum {ok_e, cant_open_file_e, bad_access_e, writeErr_e, readErr_e}status;
 	typedef enum {r, w, rp, wp, def}mode;
 	
 	virtIO_t();
@@ -25,7 +25,7 @@ public:
 	virtual void fOpen(const string& path, mode md) = 0;
 	virtual void setPosition(unsigned int position)=0;
 	virtual virtIO_t& operator>>(int& num)=0;
-	virtual virtIO_t& operator<<(int num)=0;
+	virtual virtIO_t& operator<<(int& num)=0;
 
 protected:
 	status m_status;

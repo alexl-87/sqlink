@@ -12,20 +12,20 @@ public:
 	virtual void fOpen(const string& path, mode md);
 	virtual void setPosition(unsigned int position);
 	virtual virtIO_t& operator>>(int& num);
-	virtual virtIO_t& operator<<(int num);
+	virtual virtIO_t& operator<<(int& num);
 
 private:
 	asciiIO_t(const asciiIO_t& a);
 	asciiIO_t& operator=(const asciiIO_t& a);
 
 	template <class P> 
-	void m_IO(P p, int n);
+	void m_IO(P& p, int n);
 
 	void open(const string& path, const char* md);
 };
 
 template <class P> 
-void asciiIO_t::m_IO(P p, int num)
+void asciiIO_t::m_IO(P& p, int num)
 {
 	if(m_file != 0)
 	{

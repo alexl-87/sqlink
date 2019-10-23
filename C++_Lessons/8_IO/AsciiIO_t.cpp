@@ -68,7 +68,7 @@ virtIO_t& asciiIO_t::operator>>(int& num)
 
 }
 
-virtIO_t& asciiIO_t::operator<<(int num)
+virtIO_t& asciiIO_t::operator<<(int& num)
 {
 	m_IO(num, 0);
 	return *this;

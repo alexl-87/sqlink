@@ -4,7 +4,7 @@ virtIO_t::~virtIO_t(){}
 
 virtIO_t::virtIO_t()
 {
-	m_status = def_e;
+	m_status = ok_e;
 	m_mode = def;
 	m_fileLeght = 0;
 	string m_path = "";
@@ -13,7 +13,7 @@ virtIO_t::virtIO_t()
 
 virtIO_t::virtIO_t(const string& path, mode _mode)
 {
-	m_status = def_e;
+	m_status = ok_e;
 	m_mode = _mode;
 	m_fileLeght = 0;
 	string m_path = path;
