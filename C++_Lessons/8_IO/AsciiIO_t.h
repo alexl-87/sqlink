@@ -27,13 +27,6 @@ private:
 template <class P> 
 void asciiIO_t::m_IO(P p, int num)
 {
-
-	if(m_mode != w && m_mode != wp)
-	{
-		m_status = bad_access_e;
-		throw -1;
-	}
-
 	else if(m_file != 0)
 	{
 		char c = *typeid(p).name();
@@ -74,7 +67,14 @@ void asciiIO_t::m_IO(P p, int num)
 
 		if(num == 0)
 		{
+			if(m_mode != w && m_mode != wp)
+			{
+				m_status = bad_access_e;
+				throw -1;
+			}
+
 			int res = fprintf(m_file, arg.c_str() ,p);
+			
 			if(res < 0)
 			{
 				throw res;
@@ -82,7 +82,14 @@ void asciiIO_t::m_IO(P p, int num)
 		}
 		else if(num == 1)
 		{
+			if(m_mode != r && m_mode != rp)
+			{
+				m_status = bad_access_e;
+				throw -1;
+			}
+
 			int res = fscanf(m_file, arg.c_str() ,&p);
+
 			if(res < 0)
 			{
 				throw res;
