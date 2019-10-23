@@ -8,7 +8,8 @@ using namespace std;
 int main(int argc, char const *argv[])
 {
 	FILE* file = fopen("test.txt", "r");
-	cout << file << endl;
+	int num = 4343499;
+	cout << fprintf(file, "%d", num) << endl << num << endl;
 	return 0;
 
 }

@@ -15,6 +15,7 @@ virtIO_t::virtIO_t(const string& path, const string& mode):m_path(path), m_mode(
 {
 	m_status = ok_e;
 	FILE* m_file = 0;
+	Open(path, mode.c_str());
 }
 
 void virtIO_t::Close()
@@ -29,7 +30,7 @@ void virtIO_t::Close()
 void virtIO_t::Open(const string& path, const char* mode)
 {
 	Close();
-	m_file = fopen(path, mode);
+	m_file = fopen(path.c_str(), mode);
 	if (m_file != 0)
 	{
 		m_path = path;
@@ -52,7 +53,7 @@ void virtIO_t::setPosition(unsigned int position)
 {
 	if(m_file != 0)
 	{
-		fseek(m_file, position, fseek);
+		fseek(m_file, position, SEEK_SET);
 		m_status = ok_e;
 	}
 	else
@@ -62,14 +63,14 @@ void virtIO_t::setPosition(unsigned int position)
 }
 
 
-int virtIO_t::getPosition()const
+int virtIO_t::getPosition()
 {
 	int retval = -1;
-	status = bad_access_e;
+	m_status = cant_open_file_e;
 	if (m_file != 0)
 	{	
 		retval = ftell(m_file);
-		status = ok_e;
+		m_status = ok_e;
 	}
 	return retval;
 }
@@ -79,7 +80,7 @@ const string& virtIO_t::getPath()const
 	return m_path;
 }
 
-virtIO_t::mode virtIO_t::getMode()const
+const string& virtIO_t::getMode()const
 {
 	return m_mode;
 }
@@ -89,17 +90,17 @@ virtIO_t::status virtIO_t::getStatus()const
 	return m_status;
 }
 
-int virtIO_t::getLen()const
+int virtIO_t::getLen()
 {
 	int retval = -1;
-	status = bad_access_e;
+	m_status = cant_open_file_e;
 	if (m_file != 0)
 	{	
 		int temp = ftell(m_file);
 		fseek(m_file, 0, SEEK_END);
 		retval = ftell(m_file);
 		fseek(m_file, temp, SEEK_SET);
-		status = ok_e;
+		m_status = ok_e;
 	}
 	return retval;
 }

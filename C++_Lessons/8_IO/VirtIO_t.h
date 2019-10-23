@@ -16,13 +16,13 @@ public:
 	void 			Close();
 	void 			setStatus(status _status);
 	void 			setPosition(unsigned int position);
-	void 			Open(const string& path, char* mode);
+	void 			Open(const string& path, const char* mode);
 
-	int 			getPosition()const;
-	mode 			getMode()const;
+	int 			getPosition();
+	const string& 	getMode()const;
 	status 			getStatus()const;
 	const string& 	getPath()const;
-	int 			getLen()const;
+	int 			getLen();
 
 	virtual ~virtIO_t() = 0;
 	virtual virtIO_t& operator>>(int& num)=0;
