@@ -72,20 +72,23 @@ void binIO_t::operator,(unsigned int size)
 			retval = fwrite(m_buffer, 1, size, m_file);
 			fflush(m_file);
 		}
+		
 		else if(m_read)
 		{
 			retval = fread(m_buffer, 1, size, m_file);
 		}
+
 		if(retval <= 0)
 		{
 			m_status = bad_access_e;
 
-		throw tExeption_t<string,  string, int> 
-		("*** fread()/fwrite() failed ***", __FILE__, __LINE__);	
+			throw tExeption_t<string,  string, int> 
+			("*** fread()/fwrite() failed ***", __FILE__, __LINE__);	
 
 		}
 		else{m_status = ok_e;}
 	}
+
 	else
 	{
 		m_status = bad_access_e;

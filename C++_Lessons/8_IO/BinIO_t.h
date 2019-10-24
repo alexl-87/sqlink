@@ -95,7 +95,7 @@ binIO_t& binIO_t::Write(P p, unsigned int size)
 	{
 		m_status = virtIO_t::writeErr_e;
 		throw tExeption_t<string,  string, int> 
-		("*** fwrite failed ***", __FILE__, __LINE__);;
+		("*** fwrite failed ***", __FILE__, __LINE__);
 	}
 	m_status = ok_e;
 	return *this;
