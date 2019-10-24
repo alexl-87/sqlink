@@ -8,10 +8,10 @@ int main(int argc, char const *argv[])
 {
 	
 	system("clear");
-	
+	parser p;
 	while(--argc > 0)
 	{
-		parser p(argv[argc]);
+		p.parse(argv[argc]);
 	}
 	
 	return 0;

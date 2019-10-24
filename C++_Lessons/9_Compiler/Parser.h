@@ -11,11 +11,11 @@ class parser
 {
 public:
 	~parser(){};
-	parser(char const *path){openFiles(path);};
+	parser(){};
+	void parse(char const *path);
 	
 
 private:
-	void openFiles(char const *path);
 	tokenizer m_tok;
 	analyzer m_an;
 	queue<string> m_tokens;
