@@ -15,7 +15,7 @@ int main(int argc, char const *argv[])
 	char fileType;
 	while(true)
 	{
-		cout << "Binary or ascii, that is the question? a/b" << endl;
+		cout << "Binary or ascii, that is the question? [a/b]" << endl;
 		cin>>fileType;
 		if (fileType == 'a')
 		{
