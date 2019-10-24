@@ -4,8 +4,8 @@
 class analyzer
 {
 public:
-	analyzer();
-	~analyzer();
+	analyzer(){};
+	~analyzer(){};
 	
 };
 #endif

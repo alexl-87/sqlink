@@ -2,21 +2,23 @@
 #define Parsere
 #include "Tokenizer.h"
 #include "Analyzer.h"
-#include <fstream>
 #include <vector>
+#include <string>
+
 using namespace std;
 
 class parser
 {
 public:
-	~parser(){}
-	parser(int argc, char const *argv[]){openFile(argc, argv);}
-	void openFile(int argc, char const *argv[]);
+	~parser(){};
+	parser(char const *path){openFiles(path);};
+	
 
 private:
-
+	void openFiles(char const *path);
 	tokenizer m_tok;
 	analyzer m_an;
+	vector<string> m_tokens;
 };
 
 
