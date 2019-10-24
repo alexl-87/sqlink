@@ -1,6 +1,6 @@
 #ifndef Tokenizer
 #define Tokenizer
-#include <vector>
+#include <queue>
 #include <string>
 using namespace std;
 
@@ -9,7 +9,7 @@ class tokenizer
 public:
 	tokenizer(){};
 	~tokenizer(){};
-	void parseLine(vector<string>& tokens, const string& line);
+	void parseLine(queue<string>& tokens, const string& line);
 };
 
 #endif

@@ -2,7 +2,7 @@
 #define Parsere
 #include "Tokenizer.h"
 #include "Analyzer.h"
-#include <vector>
+#include <queue>
 #include <string>
 
 using namespace std;
@@ -18,7 +18,7 @@ private:
 	void openFiles(char const *path);
 	tokenizer m_tok;
 	analyzer m_an;
-	vector<string> m_tokens;
+	queue<string> m_tokens;
 };
 
 

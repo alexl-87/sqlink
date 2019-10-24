@@ -17,8 +17,11 @@ void parser::openFiles(char const *path)
 	else
 	{
 		string line;
-		getline(file, line);
-		m_tok.parseLine(m_tokens, line);
+		while(getline(file, line))
+		{
+			m_tok.parseLine(m_tokens, line);
+		}
+		
 		//m_an.analyzeTokens(m_tokens);
 	}
 
