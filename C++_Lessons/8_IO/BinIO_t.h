@@ -8,8 +8,36 @@ public:
 	binIO_t();
 	binIO_t(const string& path, const string& mode);
 	~binIO_t();
+	
+	virtual binIO_t& operator>>(short& num);
+	virtual binIO_t& operator<<(short num);
+
 	virtual binIO_t& operator>>(int& num);
 	virtual binIO_t& operator<<(int num);
+
+	virtual binIO_t& operator>>(long& num);
+	virtual binIO_t& operator<<(long num);
+
+	virtual binIO_t& operator>>(char& num);
+	virtual binIO_t& operator<<(char num);
+
+	virtual binIO_t& operator>>(float& num);
+	virtual binIO_t& operator<<(float num);
+
+	virtual binIO_t& operator>>(double& num);
+	virtual binIO_t& operator<<(double num);
+
+	virtual binIO_t& operator>>(unsigned short& num);
+	virtual binIO_t& operator<<(unsigned short num);
+
+	virtual binIO_t& operator>>(unsigned int& num);
+	virtual binIO_t& operator<<(unsigned int num);
+
+	virtual binIO_t& operator>>(unsigned long& num);
+	virtual binIO_t& operator<<(unsigned long num);
+
+	virtual binIO_t& operator>>(unsigned char& num);
+	virtual binIO_t& operator<<(unsigned char num);
 
 	binIO_t& operator>>(void* Buffer);
 	binIO_t& operator<<(const void* Buffer);

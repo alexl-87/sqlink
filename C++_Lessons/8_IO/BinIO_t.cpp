@@ -18,10 +18,35 @@ binIO_t::binIO_t(const string& path, const string& mode)
 
 binIO_t::~binIO_t(){}
 
+binIO_t& binIO_t::operator>>(short& num){return Read(num, sizeof(short));}
+binIO_t& binIO_t::operator<<(short num){return Write(num, sizeof(short));}
 
 binIO_t& binIO_t::operator>>(int& num){return Read(num, sizeof(int));}
-
 binIO_t& binIO_t::operator<<(int num){return Write(num, sizeof(int));}
+
+binIO_t& binIO_t::operator>>(long& num){return Read(num, sizeof(long));}
+binIO_t& binIO_t::operator<<(long num){return Write(num, sizeof(long));}
+
+binIO_t& binIO_t::operator>>(char& num){return Read(num, sizeof(char));}
+binIO_t& binIO_t::operator<<(char num){return Write(num, sizeof(char));}
+
+binIO_t& binIO_t::operator>>(float& num){return Read(num, sizeof(float));}
+binIO_t& binIO_t::operator<<(float num){return Write(num, sizeof(float));}
+
+binIO_t& binIO_t::operator>>(double& num){return Read(num, sizeof(double));}
+binIO_t& binIO_t::operator<<(double num){return Write(num, sizeof(double));}
+
+binIO_t& binIO_t::operator>>(unsigned short& num){return Read(num, sizeof(unsigned short));}
+binIO_t& binIO_t::operator<<(unsigned short num){return Write(num, sizeof(unsigned short));}
+
+binIO_t& binIO_t::operator>>(unsigned int& num){return Read(num, sizeof(unsigned int));}
+binIO_t& binIO_t::operator<<(unsigned int num){return Write(num, sizeof(unsigned int));}
+
+binIO_t& binIO_t::operator>>(unsigned long& num){return Read(num, sizeof(unsigned long));}
+binIO_t& binIO_t::operator<<(unsigned long num){return Write(num, sizeof(unsigned long));}
+
+binIO_t& binIO_t::operator>>(unsigned char& num){return Read(num, sizeof(unsigned char));}
+binIO_t& binIO_t::operator<<(unsigned char num){return Write(num, sizeof(unsigned char));}
 
 binIO_t& binIO_t::operator>>(void* Buffer)
 {

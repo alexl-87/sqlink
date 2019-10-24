@@ -9,8 +9,36 @@ public:
 	asciiIO_t();
 	asciiIO_t(const string& path, const string& mode);
 	~asciiIO_t();
+
+	virtual asciiIO_t& operator>>(short& num);
+	virtual asciiIO_t& operator<<(short num);
+
 	virtual asciiIO_t& operator>>(int& num);
 	virtual asciiIO_t& operator<<(int num);
+
+	virtual asciiIO_t& operator>>(long& num);
+	virtual asciiIO_t& operator<<(long num);
+
+	virtual asciiIO_t& operator>>(char& num);
+	virtual asciiIO_t& operator<<(char num);
+
+	virtual asciiIO_t& operator>>(float& num);
+	virtual asciiIO_t& operator<<(float num);
+
+	virtual asciiIO_t& operator>>(double& num);
+	virtual asciiIO_t& operator<<(double num);
+
+	virtual asciiIO_t& operator>>(unsigned short& num);
+	virtual asciiIO_t& operator<<(unsigned short num);
+
+	virtual asciiIO_t& operator>>(unsigned int& num);
+	virtual asciiIO_t& operator<<(unsigned int num);
+
+	virtual asciiIO_t& operator>>(unsigned long& num);
+	virtual asciiIO_t& operator<<(unsigned long num);
+
+	virtual asciiIO_t& operator>>(unsigned char& num);
+	virtual asciiIO_t& operator<<(unsigned char num);
 
 private:
 	asciiIO_t(const asciiIO_t& a);

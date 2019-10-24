@@ -25,8 +25,36 @@ public:
 	int 			getLen();
 
 	virtual ~virtIO_t() = 0;
+	virtual virtIO_t& operator>>(short& num)=0;
+	virtual virtIO_t& operator<<(short num)=0;
+
 	virtual virtIO_t& operator>>(int& num)=0;
 	virtual virtIO_t& operator<<(int num)=0;
+
+	virtual virtIO_t& operator>>(long& num)=0;
+	virtual virtIO_t& operator<<(long num)=0;
+
+	virtual virtIO_t& operator>>(char& num)=0;
+	virtual virtIO_t& operator<<(char num)=0;
+
+	virtual virtIO_t& operator>>(float& num)=0;
+	virtual virtIO_t& operator<<(float num)=0;
+
+	virtual virtIO_t& operator>>(double& num)=0;
+	virtual virtIO_t& operator<<(double num)=0;
+
+	virtual virtIO_t& operator>>(unsigned short& num)=0;
+	virtual virtIO_t& operator<<(unsigned short num)=0;
+
+	virtual virtIO_t& operator>>(unsigned int& num)=0;
+	virtual virtIO_t& operator<<(unsigned int num)=0;
+
+	virtual virtIO_t& operator>>(unsigned long& num)=0;
+	virtual virtIO_t& operator<<(unsigned long num)=0;
+
+	virtual virtIO_t& operator>>(unsigned char& num)=0;
+	virtual virtIO_t& operator<<(unsigned char num)=0;
+
 
 protected:
 	status m_status;
