@@ -21,7 +21,6 @@ int main(int argc, char const *argv[])
 		{
 			file = new asciiIO_t();
 			asciiTest(file);
-			file->Close();
 			delete file;
 			cin.clear();
 		}
@@ -30,7 +29,6 @@ int main(int argc, char const *argv[])
 		{
 			file = new binIO_t();
 			binarytest(file);
-			file->Close();
 			delete file;
 			cin.clear();
 		}
