@@ -2,16 +2,14 @@
 #include <string>
 #include <vector>
 #include <typeinfo>
+#include <set>
 //#include <stdio.h>
 using namespace std;
 
 int main(int argc, char const *argv[])
 {
+	cout << sizeof(s) << endl;
 
-	int num = 9;
-
-
-	cout << num << endl;
 	return 0;
 
 }

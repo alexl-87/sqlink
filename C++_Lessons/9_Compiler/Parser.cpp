@@ -14,14 +14,23 @@ void parser::parse(char const *path)
 		cout << path << " Not founded" << endl;
 	}
 
+	
 	else
 	{
+		int lineCounter = 1;
 		string line;
 		while(getline(file, line))
 		{
 			m_tok.parseLine(m_tokens, line);
-			//m_an.analyzeTokens(m_tokens);
+			if(m_tok.length()>0)
+			m_an.analyze(m_tokens, lineCounter);
 		}
+
+		// for (std::vector<string>::iterator i = m_tokens.begin(); i != m_tokens.end(); ++i)
+		// {
+		// 	cout << *i << endl;
+		// }
+
 		
 		
 	}

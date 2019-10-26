@@ -2,7 +2,7 @@
 #define Parsere
 #include "Tokenizer.h"
 #include "Analyzer.h"
-#include <queue>
+#include <vector>
 #include <string>
 
 using namespace std;
@@ -18,7 +18,7 @@ public:
 private:
 	tokenizer m_tok;
 	analyzer m_an;
-	queue<string> m_tokens;
+	vector<string> m_tokens;
 };
 
 
