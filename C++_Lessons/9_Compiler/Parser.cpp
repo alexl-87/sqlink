@@ -18,21 +18,17 @@ void parser::parse(char const *path)
 	else
 	{
 		int lineCounter = 1;
+		int retVal = 0;
 		string line;
 		while(getline(file, line))
 		{
-			m_tok.parseLine(m_tokens, line);
-			if(m_tok.length()>0)
-			m_an.analyze(m_tokens, lineCounter);
-		}
-
-		// for (std::vector<string>::iterator i = m_tokens.begin(); i != m_tokens.end(); ++i)
-		// {
-		// 	cout << *i << endl;
-		// }
-
-		
-		
+			retVal = m_tok.parseLine(m_tokens, line);
+			if (retVal > 0)
+			{
+				m_an.analyze(m_tokens, lineCounter);
+			}
+			
+		}		
 	}
 
 	file.close();

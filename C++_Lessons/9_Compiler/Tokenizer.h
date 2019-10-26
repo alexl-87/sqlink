@@ -10,7 +10,7 @@ class tokenizer
 public:
 	tokenizer(){};
 	~tokenizer(){};
-	void parseLine(vector<string>& tokens, const string& line);
+	int parseLine(vector<string>& tokens, const string& line);
 };
 
 #endif

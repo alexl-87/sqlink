@@ -4,8 +4,9 @@
 #include <string>
 using namespace std;
 
-void tokenizer::parseLine(vector<string>& tokens, const string& line)
-{
+int tokenizer::parseLine(vector<string>& tokens, const string& line)
+{	
+	int counter = 0;
 	int leftIndex = 0;
 	int len = 0;
 	for(int i = 0; i < line.length()-1; ++i)
@@ -20,11 +21,15 @@ void tokenizer::parseLine(vector<string>& tokens, const string& line)
 		if(len > 0)
 		{
 			tokens.push_back(line.substr(leftIndex, len));
+			counter++;
 		}
 
 		if(!isalpha(line[i]) && !isspace(line[i]))
 		{
 			tokens.push_back(line.substr(i, 1));
+			counter++;
 		}
 	}
+
+	return counter;
 }

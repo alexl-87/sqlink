@@ -17,8 +17,12 @@ private:
 	set<string> m_variables;
 	set<string> m_types;
 	set<string> m_keywords;
-	map<char, int> m_operators;
-	vector<string>::iterator m_it;
-	bool m_iteratorInit;
+	map<string, int> m_operators;
+	int m_index;
+	bool m_ifElse;
+
+	bool declaration(vector<string>& tokens, int line);
+	bool operatorsCounter(vector<string>& tokens, int line);
+
 };
 #endif
