@@ -1,10 +1,11 @@
 #include "Tokenizer.h"
 #include <iostream>
-#include <experimental/vector>
+#include <queue>
 #include <string>
 using namespace std;
 
-int tokenizer::parseLine(vector<string>& tokens, const string& line)
+
+int tokenizer::parseLine(queue<string>& tokens, const string& line)
 {	
 	int counter = 0;
 	int leftIndex = 0;
@@ -20,16 +21,15 @@ int tokenizer::parseLine(vector<string>& tokens, const string& line)
 
 		if(len > 0)
 		{
-			tokens.push_back(line.substr(leftIndex, len));
+			tokens.push(line.substr(leftIndex, len));
 			counter++;
 		}
 
 		if(!isalpha(line[i]) && !isspace(line[i]))
 		{
-			tokens.push_back(line.substr(i, 1));
+			tokens.push(line.substr(i, 1));
 			counter++;
 		}
 	}
-
 	return counter;
 }

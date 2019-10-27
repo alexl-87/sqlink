@@ -3,26 +3,31 @@
 #include <string>
 #include <set>
 #include <map>
-#include <vector>
-using namespace std;
+#include <queue>
 
 class analyzer
 {
 public:
 	analyzer();
 	~analyzer(){};
-	void analyze(vector<string>& tokens, int line);
+	void analyze(std::queue<std::string>& tokens, int line);
 	
 private:
-	set<string> m_variables;
-	set<string> m_types;
-	set<string> m_keywords;
-	map<string, int> m_operators;
-	int m_index;
+	analyzer(const analyzer& t);
+	const analyzer& operator=(const analyzer& t);
+
+	std::set<std::string> m_variables;
+	std::set<std::string> m_types;
+	std::set<std::string> m_keywords;
+	std::map<char, int> m_operators;
+	std::string m_currentToken;
+	static std::string m_delimiters;
 	bool m_ifElse;
 
-	bool declaration(vector<string>& tokens, int line);
-	bool operatorsCounter(vector<string>& tokens, int line);
+	bool declaration(std::queue<std::string>& tokens, int line);
+	bool operatorsCounter(std::queue<std::string>& tokens, int line);
+	static void setDelimiters(const std::string& delimiters);
+	static const std::string& getDelimiters();
 
 };
 #endif

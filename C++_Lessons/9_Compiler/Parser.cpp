@@ -1,7 +1,23 @@
 #include "Parser.h"
+#include "Tokenizer.h"
+#include "Analyzer.h"
 #include <fstream>
 #include <iostream>
 using namespace std;
+
+
+parser::~parser()
+{
+	delete m_tok;
+	delete m_an;
+}
+
+parser::parser()
+{
+	m_tok = new tokenizer();
+	m_an = new analyzer();
+}
+
 
 void parser::parse(char const *path)
 {
@@ -20,12 +36,12 @@ void parser::parse(char const *path)
 		int lineCounter = 1;
 		int retVal = 0;
 		string line;
-		while(getline(file, line))
+		while(!getline(file, line).fail())
 		{
-			retVal = m_tok.parseLine(m_tokens, line);
+			retVal = m_tok->parseLine(m_tokens, line);
 			if (retVal > 0)
 			{
-				m_an.analyze(m_tokens, lineCounter);
+				m_an->analyze(m_tokens, lineCounter);
 			}
 			
 		}		

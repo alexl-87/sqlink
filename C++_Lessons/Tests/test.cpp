@@ -3,13 +3,19 @@
 #include <vector>
 #include <typeinfo>
 #include <set>
+#include <fstream>
 //#include <stdio.h>
 using namespace std;
 
 int main(int argc, char const *argv[])
 {
-	cout << sizeof(s) << endl;
+	fstream f;
+	f.open("test.txt", fstream::in);
+	string line;
 
-	return 0;
-
+	while(!getline(f, line).fail())
+	{
+		cout<<line<<endl;
+	}
+	
 }

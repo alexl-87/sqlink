@@ -1,31 +1,24 @@
 #ifndef Parser
-#define Parsere
-#include "Tokenizer.h"
-#include "Analyzer.h"
-#include <vector>
+#define Parser
+#include <queue>
 #include <string>
 
-using namespace std;
-
+class analyzer;
+class tokenizer;
 class parser
 {
 public:
-	~parser(){};
-	parser(){};
+	~parser();
+	parser();
 	void parse(char const *path);
 	
 
 private:
-	tokenizer m_tok;
-	analyzer m_an;
-	vector<string> m_tokens;
+	parser(const parser& t);
+	const parser& operator=(const parser& t)
+	
+	tokenizer* m_tok;
+	analyzer* m_an;
+	std::queue<std::string> m_tokens;
 };
-
-
-
-
-
-
-
-
 #endif
