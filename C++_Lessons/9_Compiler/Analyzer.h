@@ -11,6 +11,7 @@ public:
 	analyzer();
 	~analyzer(){};
 	void analyze(std::queue<std::string>& tokens, int line);
+	void checkClosures();
 	
 private:
 	analyzer(const analyzer& t);
@@ -23,11 +24,15 @@ private:
 	std::string m_currentToken;
 	static std::string m_delimiters;
 
+	int m_closures;
+	int m_brackets;
+	int m_sbrackets;
+
 	/*FLAGS*/
 	bool m_ifElse;
 	bool m_declare;
 
-
+	bool isClosure();
 	void declaration(int line);
 	void operatorsCounter(std::queue<std::string>& tokens, int line);
 	void resetMinusPlus();

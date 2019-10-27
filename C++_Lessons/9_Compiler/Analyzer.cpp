@@ -13,6 +13,9 @@ analyzer::analyzer()
 {
 	m_ifElse = false;
 	m_declare = false;
+	m_closures = 0;
+	m_brackets = 0;
+	m_sbrackets = 0;
 
 	string keyWords[] = {"if", "else", "for", "while", "class", "private",
 						"public", "protected", "main", "const", "virtual"};
@@ -120,14 +123,45 @@ void analyzer::operatorsCounter(queue<string>& tokens, int line)
 			<< m_currentToken[0] << endl;
 		}
 	}
-	else if(true)
+
+	else if(isClosure())
 	{
-		resetMinusPlus();
+		int result = 0;
+		++m_operators.find(m_currentToken[0])->second;
+		checkClosures();
 	}
+}
+
+void analyzer::checkClosures()
+{
+
+	if(m_currentToken[0] =='(' || m_currentToken[0] ==')')
+	{
+		
+	}
+	else if (m_currentToken[0] =='[' || m_currentToken[0] ==']')
+	{
+		/* code */
+	}
+	else if (m_currentToken[0] =='{' || m_currentToken[0] =='}')
+	{
+
+	}
+
 }
 
 void analyzer::resetMinusPlus()
 {
 	m_operators.find('+')->second = 0;
 	m_operators.find('-')->second = 0;
+}
+
+
+bool analyzer::isClosure()
+{
+	bool p1 = (m_currentToken[0] = '(') || (m_currentToken[0] = ')');
+	bool p2 = (m_currentToken[0] = '[') || (m_currentToken[0] = ']');
+	bool p3 = (m_currentToken[0] = '{') || (m_currentToken[0] = '}');
+
+	return p1||p2||p3;
 }
