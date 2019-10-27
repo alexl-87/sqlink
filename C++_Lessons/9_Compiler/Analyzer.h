@@ -22,10 +22,15 @@ private:
 	std::map<char, int> m_operators;
 	std::string m_currentToken;
 	static std::string m_delimiters;
-	bool m_ifElse;
 
-	bool declaration(std::queue<std::string>& tokens, int line);
-	bool operatorsCounter(std::queue<std::string>& tokens, int line);
+	/*FLAGS*/
+	bool m_ifElse;
+	bool m_declare;
+
+
+	void declaration(int line);
+	void operatorsCounter(std::queue<std::string>& tokens, int line);
+	void resetMinusPlus();
 	static void setDelimiters(const std::string& delimiters);
 	static const std::string& getDelimiters();
 

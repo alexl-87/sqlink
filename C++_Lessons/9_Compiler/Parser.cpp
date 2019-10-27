@@ -44,7 +44,14 @@ void parser::parse(char const *path)
 				m_an->analyze(m_tokens, lineCounter);
 			}
 			
-		}		
+		}
+		// while (!m_tokens.empty())
+		// {
+
+		// 	cout << m_tokens.front() << endl;	
+		// 	m_tokens.pop();
+		// }
+	
 	}
 
 	file.close();

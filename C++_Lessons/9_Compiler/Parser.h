@@ -15,8 +15,8 @@ public:
 
 private:
 	parser(const parser& t);
-	const parser& operator=(const parser& t)
-	
+	const parser& operator=(const parser& t);
+
 	tokenizer* m_tok;
 	analyzer* m_an;
 	std::queue<std::string> m_tokens;
