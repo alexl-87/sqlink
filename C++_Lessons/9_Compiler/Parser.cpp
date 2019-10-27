@@ -45,7 +45,6 @@ void parser::parse(char const *path)
 			}
 			++lineCounter;
 		}
-		m_an->checkClosures();
 		// while (!m_tokens.empty())
 		// {
 

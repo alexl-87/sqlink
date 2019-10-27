@@ -11,7 +11,7 @@ public:
 	analyzer();
 	~analyzer(){};
 	void analyze(std::queue<std::string>& tokens, int line);
-	void checkClosures();
+	
 	
 private:
 	analyzer(const analyzer& t);
@@ -22,19 +22,23 @@ private:
 	std::set<std::string> m_keywords;
 	std::map<char, int> m_operators;
 	std::string m_currentToken;
+	std::string m_previousToken;
 	static std::string m_delimiters;
 
 	int m_closures;
 	int m_brackets;
 	int m_sbrackets;
+	int m_currentLine;
 
 	/*FLAGS*/
 	bool m_ifElse;
 	bool m_declare;
 
-	bool isClosure();
-	void declaration(int line);
-	void operatorsCounter(std::queue<std::string>& tokens, int line);
+	void isValidOperator(char operator1, char operator2, std::queue<std::string>& tokens);
+	bool isClosure() const;
+	void checkClosures();
+	void declaration();
+	void operatorsCounter(std::queue<std::string>& tokens);
 	void resetMinusPlus();
 	static void setDelimiters(const std::string& delimiters);
 	static const std::string& getDelimiters();

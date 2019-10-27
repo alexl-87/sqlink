@@ -6,7 +6,7 @@ else const virtual
 
 ( go ) ]
 
-+++
++++++++
 int abc
 float abc
 -
@@ -17,7 +17,7 @@ double virtual
 int
 private
 <<<<<< >>>>>>>
-++--++--++-
++++--++--++-
 [[([
 {{{
 (
