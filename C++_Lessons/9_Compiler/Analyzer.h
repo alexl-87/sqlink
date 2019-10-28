@@ -9,9 +9,9 @@ class analyzer
 {
 public:
 	analyzer();
-	~analyzer(){};
-	void analyze(std::queue<std::string>& tokens, int line);
-	void terminate();
+	virtual ~analyzer(){};
+	virtual void analyze(std::queue<std::string>& tokens, int line);
+	virtual void terminate();
 	
 private:
 	analyzer(const analyzer& t);
