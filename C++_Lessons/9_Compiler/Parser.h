@@ -8,9 +8,10 @@ class tokenizer;
 class parser
 {
 public:
-	virtual  ~parser();
+
 	parser();
-	virtual  void parse(char const *path);
+	virtual ~parser();
+	virtual void parse(char const *path);
 	
 
 private:

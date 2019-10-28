@@ -12,6 +12,7 @@ public:
 	virtual ~analyzer(){};
 	virtual void analyze(std::queue<std::string>& tokens, int line);
 	virtual void terminate();
+	void updateDelimiters();
 	
 private:
 	analyzer(const analyzer& t);
@@ -21,8 +22,10 @@ private:
 	std::set<std::string> m_types;
 	std::set<std::string> m_keywords;
 	std::map<char, int> m_operators;
+
 	std::string m_currentToken;
 	std::string m_previousToken;
+
 	static std::string m_delimiters;
 
 	int m_closures;

@@ -220,3 +220,21 @@ void analyzer::terminate()
 		cout<<m_sbrackets<<" : opened square brackets []" << endl;
 	}
 }
+
+void analyzer::setDelimiters(const std::string& delimiters)
+{
+	m_delimiters = delimiters;
+}
+const string& analyzer::getDelimiters()
+{
+	return m_delimiters;
+}
+
+void analyzer::updateDelimiters()
+{
+	m_operators.clear();
+	for (int i = 0; i < m_delimiters.length(); ++i)
+	{
+		m_operators.insert(pair<char, int>(m_delimiters[i],0));
+	}
+}

@@ -10,12 +10,14 @@ int tokenizer::parseLine(queue<string>& tokens, const string& line)
 	int counter = 0;
 	int leftIndex = 0;
 	int len = 0;
+
 	for(int i = 0; i < line.length()-1; ++i)
 	{
-		while(isspace(line[i])){++i;}
+		while(isspace(line[i])){++i;}//skip spaces
 		leftIndex = i;
 
-		while(isalpha(line[i]) || isdigit(line[i])){++i;}
+		/*push any string [0-9, a-z, A-Z]*/
+		while(isalpha(line[i]) || isdigit(line[i])){++i;} 
 
 		len = i - leftIndex;
 
@@ -25,6 +27,7 @@ int tokenizer::parseLine(queue<string>& tokens, const string& line)
 			counter++;
 		}
 
+		/*push any single symbol*/
 		if(!isalpha(line[i]) && !isspace(line[i]))
 		{
 			tokens.push(line.substr(i, 1));

@@ -54,5 +54,4 @@ void parser::parse(char const *path)
 	m_an->terminate();
 
 	file.close();
-
 }
