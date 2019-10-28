@@ -11,7 +11,7 @@ public:
 	analyzer();
 	~analyzer(){};
 	void analyze(std::queue<std::string>& tokens, int line);
-	
+	void terminate();
 	
 private:
 	analyzer(const analyzer& t);

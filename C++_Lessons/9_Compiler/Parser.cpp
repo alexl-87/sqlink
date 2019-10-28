@@ -28,31 +28,30 @@ void parser::parse(char const *path)
 	if(file.fail())
 	{
 		cout << path << " Not founded" << endl;
+		return;
 	}
 
-	
-	else
+	string str;
+	file>>str;
+	if(str != "main")
 	{
-		int lineCounter = 1;
-		int retVal = 0;
-		string line;
-		while(!getline(file, line).fail())
-		{
-			retVal = m_tok->parseLine(m_tokens, line);
-			if (retVal > 0)
-			{
-				m_an->analyze(m_tokens, lineCounter);
-			}
-			++lineCounter;
-		}
-		// while (!m_tokens.empty())
-		// {
-
-		// 	cout << m_tokens.front() << endl;	
-		// 	m_tokens.pop();
-		// }
-	
+		cout<<"***Illegal code before main***"<<endl;
 	}
+
+
+	int lineCounter = 1;
+	int retVal = 0;
+	string line;
+	while(!getline(file, line).fail())
+	{
+		retVal = m_tok->parseLine(m_tokens, line);
+		if (retVal > 0)
+		{
+			m_an->analyze(m_tokens, lineCounter);
+		}
+		++lineCounter;
+	}
+	m_an->terminate();
 
 	file.close();
 

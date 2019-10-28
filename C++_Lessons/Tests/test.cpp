@@ -7,7 +7,15 @@
 #include <cctype>//#include <stdio.h>
 using namespace std;
 
+class tet
+{
+public:
+	char a;
+	static int b;
+	int c;
+	
+};
 int main(int argc, char const *argv[])
 {
-	cout << isalpha('5') << endl;
+	tet t = {12.35, 13.65};
 }

@@ -72,10 +72,6 @@ void analyzer::analyze(queue<string>& tokens, int line)
 				<< m_currentToken <<  endl;
 				resetMinusPlus();
 		}
-
-		// m_currentToken = tokens.front();
-		// tokens.pop();
-		// cout << m_currentToken << endl;
 	}
 }
 
@@ -206,4 +202,21 @@ void analyzer::isValidOperator(char operator1, char operator2, queue<string>& to
 	}
 	(m_currentToken[0] == operator1)?m_operators.find(operator2)->second = 0
 									:m_operators.find(operator1)->second = 0;
+}
+
+void analyzer::terminate()
+{
+
+	if (m_closures > 0)
+	{
+		cout<<m_closures<<" : opened closures ()" << endl;
+	}
+	if(m_brackets > 0)
+	{
+		cout<<m_brackets<<" : opened brackets {}" << endl;
+	}
+	if(m_sbrackets > 0)
+	{	
+		cout<<m_sbrackets<<" : opened square brackets []" << endl;
+	}
 }
