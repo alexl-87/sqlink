@@ -8,8 +8,9 @@
 #include <grp.h>
 #include <time.h>
 static char month[12][12] = {"Jan","Feb","Mar","Apr",
-							"May","Jun","Jul","Aug",
-							"Sep","Oct","Nov","Dec"};
+							 "May","Jun","Jul","Aug",
+							 "Sep","Oct","Nov","Dec"};
+
 void printInfo(char* filePath);
 void fileTypeCat(char* info, int mode);
 void ownerGroupCat(struct stat* st, char* info);
@@ -17,9 +18,7 @@ void dateCat(struct timespec st_mtim, char* info);
 
 int main(int argc, char const *argv[])
 {
-	onFileFoundedAction userFunc = printInfo;
-	system("clear");
-	getFiles("/home/alex/MyGit/sqlink/dfdf", userFunc);
+	getFiles(".", printInfo);
 	return 0;
 }
 
@@ -30,7 +29,7 @@ void printInfo(char* filePath)
 	struct stat st;
 	char* info = malloc(128);
 
-	fstat(filePath, &st);
+	stat(filePath, &st);
 
 
 	fileTypeCat(info, st.st_mode);

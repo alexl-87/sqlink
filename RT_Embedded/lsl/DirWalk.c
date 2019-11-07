@@ -10,7 +10,6 @@ DirWalkStatus getFiles(char* dirPath, onFileFoundedAction userFunc)
 	DIR *d;
 	dirent *dir;
 	char nextPath[512];
-	unsigned char* MD5;
 
 	if(!dirPath)return Dir_ParamE;
 	d = opendir(dirPath);
