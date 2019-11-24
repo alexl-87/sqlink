@@ -1,0 +1,1 @@
+cmd_/home/alex/Desktop/MyGit/sqlink/RT_Embedded/Driver/my_null.mod := { echo  /home/alex/Desktop/MyGit/sqlink/RT_Embedded/Driver/main.o; echo; } > /home/alex/Desktop/MyGit/sqlink/RT_Embedded/Driver/my_null.mod
