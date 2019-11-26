@@ -1,8 +1,13 @@
+#CPPFLAGS = g++ -ansi -o reader -pedantic -Wall
+#reader: reader.cpp mq.h
+#	$(CPPFLAGS) reader.cpp
 # this is a minimal makefile for demo purposes, keep it that way...
 obj-m:=ipc_msgq.o
 ipc_msgq-objs:=msgq.o
 V?=0
 KDIR?=/lib/modules/$(shell uname -r)/build
+
+
 # in an embedded system:
 #KDIR:=[where the system maker gave me kernel headers+makefile or the kernel itself which has a makefile]
 #ARCH:=arm
@@ -17,3 +22,6 @@ modules:
 clean:
 	$(MAKE) -C $(KDIR) M=$(CURDIR) V=$(V) clean
 	rm -f *.stamp
+
+
+
