@@ -9,30 +9,6 @@
 #include <linux/slab.h> /*kmalloc()*/
 #define MINOR_COUNT 8
 
-/*FILE OPERATIONS*/
-static int open_ipc_msgq_dev(struct inode* ind, struct file* f)
-{
-	pr_alert("ipc_msgq_dev: TEST inside OPEN function\n");
-	return 123;
-}
-
-static int release_ipc_msgq_dev(struct inode* ind, struct file* f)
-{
-
-	//linked list CTOR
-
-	
-	pr_alert("ipc_msgq_dev: TEST inside RELEASE function\n");
-	return 321;
-}
-/*****************/
-
-static struct file_operations file_ops = 
-{
-	.owner = THIS_MODULE,
-	.open = open_ipc_msgq_dev,
-	.release = release_ipc_msgq_dev
-};
 
 static struct cdev cdev_msgq;
 static struct class *class_msgq;
@@ -41,11 +17,39 @@ static dev_t dev_msgq;
 struct ipc_queue
 {
 	struct device* ipc_queue_device;
-	//linkes list ptr
-		// linked list structure and data
 };
 
 static struct ipc_queue* ipc_queue_arr;
+
+/*FILE OPERATIONS*/
+static int open_ipc_msgq_dev(struct inode* ind, struct file* f)
+{
+	int the_pipe_number = iminor(ind)-MINOR(dev_msgq);
+	pr_alert("ipc_msgq_dev: the_pipe_number - %d\n", the_pipe_number);
+	return 123;
+}
+
+static int release_ipc_msgq_dev(struct inode* ind, struct file* f)
+{
+	pr_alert("ipc_msgq_dev: TEST inside RELEASE function\n");
+	return 321;
+}
+
+static ssize_t read_ipc_msgq_dev (struct file* f, char __user* usr, size_t n, loff_t* loff)
+{
+	pr_alert("ipc_msgq_dev: TEST inside READ function\n");
+	return 321;
+}
+/*****************/
+
+static struct file_operations file_ops = 
+{
+	.owner = THIS_MODULE,
+	.open = open_ipc_msgq_dev,
+	.read = read_ipc_msgq_dev,
+	.release = release_ipc_msgq_dev
+};
+
 
 static int __init msgq_init(void)
 {

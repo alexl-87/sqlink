@@ -1,0 +1,1 @@
+cmd_/home/alex/MyGit/sqlink/RT_Embedded/msgq/ipc_msgq.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000 -T ./scripts/module-common.lds --build-id  -o /home/alex/MyGit/sqlink/RT_Embedded/msgq/ipc_msgq.ko /home/alex/MyGit/sqlink/RT_Embedded/msgq/ipc_msgq.o /home/alex/MyGit/sqlink/RT_Embedded/msgq/ipc_msgq.mod.o ;  true
