@@ -9,6 +9,7 @@
 							device_create()*/
 #include <linux/slab.h> /*kmalloc()*/
 #include <linux/list.h>
+#include <sys/type.h>
 #define MINOR_COUNT 8
 
 /*STRUCTS*/
@@ -16,18 +17,18 @@ static struct cdev cdev_msgq;
 static struct class *class_msgq;
 static dev_t dev_msgq;
 
-// static struct q_message
-// {
-// 	struct list_head node;
-// 	char* data;
-// 	int size;
-// };
+static struct q_message
+{
+	struct list_head node;
+	char* data;
+	int size;
+};
 
 static struct ipc_queue
 {	
 	struct device* msgq_dev;
 	unsigned long msg_counter;
-	//struct list_head list;
+	struct list_head list;
 };
 
 static struct ipc_queue* msgq_list;
@@ -50,6 +51,7 @@ static int release_ipc_msgq_dev(struct inode* ind, struct file* f)
 
 static long ipc_msgq_dev_ioctl(struct file* f, unsigned int num, unsigned long lon)
 {
+	
 	pr_alert("ipc_msgq_dev: TEST inside IOCTL function\n");
 	return 132;
 }
@@ -60,6 +62,7 @@ static void ipc_msgq_ctor(struct ipc_queue* queue, struct device* dev)
 {
 	queue->msg_counter = 0;
 	queue->msgq_dev = dev;
+	INIT_LIST_HEAD(queue->list);
 }
 
 static struct file_operations file_ops = 

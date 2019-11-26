@@ -3,6 +3,7 @@
 
 #define MQ_SEND_MSG 840
 #define MQ_RECV_MSG 841
+#define MESSAGE_SIZE 4096
 
 #pragma pack(push, 1)
 struct mq_reg
