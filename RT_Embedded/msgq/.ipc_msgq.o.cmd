@@ -1,1 +1,0 @@
-cmd_/home/alex/MyGit/sqlink/RT_Embedded/msgq/ipc_msgq.o := ld -m elf_x86_64  -z max-page-size=0x200000    -r -o /home/alex/MyGit/sqlink/RT_Embedded/msgq/ipc_msgq.o /home/alex/MyGit/sqlink/RT_Embedded/msgq/msgq.o
