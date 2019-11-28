@@ -17,7 +17,7 @@ MD5Status calculateMD5(char* filePath, unsigned char** MD5)
 
 	if(!filePath)return MD5_paramE;
 
-	newMD5 = malloc(MD5_DIGEST_LENGTH+1);
+	newMD5 = (unsigned char*)malloc(MD5_DIGEST_LENGTH+1);
 	if(!newMD5)return MD5_mallocE;
 
 	file = fopen(filePath, "r");

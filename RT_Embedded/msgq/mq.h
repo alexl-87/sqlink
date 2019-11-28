@@ -1,14 +1,14 @@
 #ifndef MQ_H
 #define MQ_H
 
-#define MQ_SEND_MSG 840
-#define MQ_RECV_MSG 841
+#define MSGQ_WRITER 840
+#define MSGQ_READER 841
 #define MESSAGE_SIZE 4096
 
 #pragma pack(push, 1)
 struct mq_reg
 {
-    char* data;
+    const char* data;
     int size;
 };
 #pragma pack(pop)
