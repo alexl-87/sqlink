@@ -140,19 +140,19 @@ static long ipc_msgq_dev_ioctl(struct file* f, unsigned int mode, unsigned long 
 				return retval;
 			}
 
-			wait_event(curr_ipc_queue->wait_write_queue, isFull(curr_ipc_queue));
+			wait_event_interruptible(curr_ipc_queue->wait_write_queue, isFull(curr_ipc_queue));
 			list_add(&new_q_message->node, &curr_ipc_queue->list);
 			pr_info("ipc_msgq_dev: recieved message %s\n", new_q_message->data);
 			pr_info("ipc_msgq_dev: recieved message size = %d\n", new_q_message->size);
 			++curr_ipc_queue->msg_counter;
 			mutex_unlock(&curr_ipc_queue->lock_1);
-			wake_up(&curr_ipc_queue->wait_read_queue);
+			wake_up_interruptible(&curr_ipc_queue->wait_read_queue);
 			return 0;
 
 		case MSGQ_READER:
 
 			pr_info("ipc_msgq_dev: inside READER mode\n");
-			wait_event(curr_ipc_queue->wait_read_queue, isEmpty(curr_ipc_queue));
+			wait_event_interruptible(curr_ipc_queue->wait_read_queue, isEmpty(curr_ipc_queue));
 			new_q_message = list_entry((&curr_ipc_queue->list)->prev, struct q_message, node);
 
 			if (IS_ERR(new_q_message))
@@ -175,7 +175,7 @@ static long ipc_msgq_dev_ioctl(struct file* f, unsigned int mode, unsigned long 
 			--curr_ipc_queue->msg_counter;
 			q_message_dtor(new_q_message);
 			mutex_unlock(&curr_ipc_queue->lock_1);
-			wake_up(&curr_ipc_queue->wait_write_queue);			
+			wake_up_interruptible(&curr_ipc_queue->wait_write_queue);			
 
 			return new_q_message->size;
 

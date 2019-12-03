@@ -29,6 +29,7 @@ clean:
 	$(MAKE) -C $(KDIR) M=$(CURDIR) V=$(V) clean
 	rm -f *.stamp
 	rm -f writer
+	rm -f reader
 
 writer: writer.cpp
 	g++ -O2 -Wall -Werror -ansi -pedantic -o $@ $<
