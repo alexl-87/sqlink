@@ -136,7 +136,7 @@ int main(int argc, char const *argv[])
 		pthread_t newThread;
 		retval = pthread_create(&newThread, NULL, response, (void*) &accept_fd);
 
-		if (retval)
+		if(retval)
 		{
 			fprintf(stderr, "Failed to create thread\n");
 			exit(1);
