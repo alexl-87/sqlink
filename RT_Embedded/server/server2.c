@@ -12,35 +12,48 @@
 #include <sys/epoll.h>
 #include <signal.h>
 
-#define PORT 5050
-#define BUFFER_SIZE 4096
-#define FILENAME_LEN 128
-#define NUM_OF_EVENTS 100
-#define EPOLL EPOLLIN|EPOLLOUT
+const int port=5050;
+const int buffer_size=4096;
+const int filename_len=128;
+const int num_of_events=100;
+const int max_message=300;
 
 int loop = 1;
 
-typedef struct respond
+typedef struct _response
 {
-	char* m_buffer;
-	unsigned int m_index;
-	unsigned int m_buffsize;
+	char* buffer;
+	unsigned int index;
+	unsigned int size;
+	char* filename;
 
-}respond;
+} response;
 
-respond* buffer_manager[NUM_OF_EVENTS];
+response* buffer_manager;
 
 void ERR(int n, const char* msg);
-void socket_init(struct sockaddr_in* serv_addr, int* socket_fd);
-void epoll_init(int* epoll_fd, int* socket_fd, struct epoll_event* event);
-void read_request(int* fd, int* epoll_fd, char* buffer);
-void response(FILE* file, int* fd, int* file_len, char* file_content);
+void check_not_null(void* p, const char* msg);
+void init_buffer_manager() {
+	buffer_manager=(response*)malloc(sizeof(response)*num_of_events);
+	check_not_null(buffer_manager, "alloc");
+	for(int i=0;i<num_of_events;i++) {
+		buffer_manager[i].buffer=(char*)malloc(max_message);
+		check_not_null(buffer_manager[i].buffer, "alloc");
+		buffer_manager[i].index=0;
+		buffer_manager[i].size=max_message;
+		buffer_manager[i].filename=NULL;
+	}
+}
+int message_has_ended(int fd);
+int socket_init();
+int epoll_init(int socket_fd);
+void read_request(int fd, int epoll_fd);
+void handle_response(FILE* file, int* fd, int* file_len, char* file_content);
 void get_file_name(char* buffer, char* filename);
-void accept_request(int* socket_fd, int* epoll_fd, struct sockaddr_in* client_addr);
+int accept_request(int socket_fd, int epoll_fd);
 int get_file_len(FILE* file);
 
-void SIGINT_handler(int signal)
-{
+void SIGINT_handler(int signal) {
 	printf("\nSignal %d accepted\nNothing to do with this yet\n", signal);
 	loop = 0;
 }
@@ -54,53 +67,39 @@ void SIGINT_handler(int signal)
 
 int main(int argc, char const *argv[])
 {
-	if(signal(SIGINT, SIGINT_handler) == SIG_ERR)
-	printf("\ncan't catch SIGINT\n");
+	init_buffer_manager();
+	if(signal(SIGINT, SIGINT_handler) == SIG_ERR) {
+		printf("can't catch SIGINT\n");
+		exit(1);
+	}
 
-	int socket_fd = 0, epoll_fd = 0;
-	struct sockaddr_in serv_addr, client_addr;
+	int socket_fd=socket_init();
+	int epoll_fd=epoll_init(socket_fd);
 
-	socket_init(&serv_addr, &socket_fd);
-
-	struct epoll_event event, events_q[NUM_OF_EVENTS];
-
-	epoll_init(&epoll_fd, &socket_fd, &event);
-
-	while(loop)
-	{
-		int events_counter = epoll_wait(epoll_fd, events_q, NUM_OF_EVENTS, -1);
+	while(loop) {
+		struct epoll_event events_q[num_of_events];
+		int events_counter = epoll_wait(epoll_fd, events_q, num_of_events, -1);
 		ERR(events_counter, "Failed epoll_wait()");
-		int i = 0;
-		for (;i < events_counter; ++i)
-		{
+		for (int i=0;i<events_counter;i++) {
 			int fd = events_q[i].data.fd;
-			if(fd == socket_fd)
-			{	
-				accept_request(&socket_fd, &epoll_fd, &client_addr);
-			}
-
-			else
-			{
-
-				char filename[FILENAME_LEN];
-				char buffer[BUFFER_SIZE];
-				char* file_content;
-
-				if(events_q[i].events & EPOLLIN)
-				{
-					read_request(&fd, &epoll_fd, buffer);
-					get_file_name(buffer, filename);
+			int events=events_q[i].events;
+			if(fd == socket_fd) {	
+				accept_request(socket_fd, epoll_fd);
+			} else {
+				if(events & EPOLLIN) {
+					read_request(fd, epoll_fd);
 				}
 
-				if(events_q[i].events & EPOLLOUT)
+				if(events & EPOLLOUT)
 				{
+					const char* filename=buffer_manager[i].filename;
 					FILE* file = fopen(filename, "r");
 
 					if (file)
 					{
 						int file_len = get_file_len(file);
 						file_content = malloc(file_len);
-						buffer_manager[fd] = (respond*) malloc(sizeof(respond));
+						buffer_manager[fd] = (response*) malloc(sizeof(response));
 						if (!file_content || !buffer_manager[fd])
 						{
 							printf("malloc error\n");
@@ -112,7 +111,7 @@ int main(int argc, char const *argv[])
 							buffer_manager[fd]->m_index = 0;
 							buffer_manager[fd]->m_buffer = file_content;
 							buffer_manager[fd]->m_buffsize = file_len;
-							response(file, &fd, &file_len, file_content);
+							handle_response(file, &fd, &file_len, file_content);
 						}
 						
 					}
@@ -131,71 +130,105 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
-
-void ERR(int n, const char* msg)
+void ERR(int errcode, const char* msg)
 {
-	if (n < 0)
-	{
-		printf("%s\n", msg);
-		exit(0);
+	if (errcode==-1) {
+		perror(NULL);
+		fprintf(stderr, "%s\n", msg);
+		exit(1);
 	}
 }
 
-void socket_init(struct sockaddr_in* serv_addr, int* socket_fd)
+void check_not_null(void* p, const char* msg) {
+	if(p==NULL) {
+		fprintf(stderr, "%s\n", msg);
+		exit(1);
+	}
+}
+
+int socket_init()
 {
-	ERR(*socket_fd = socket(AF_INET, SOCK_STREAM, 0), "Failed socket()");
+	int socket_fd;
+	ERR(socket_fd = socket(AF_INET, SOCK_STREAM, 0), "Failed socket()");
+	struct sockaddr_in serv_addr;
 	bzero((void*) serv_addr, sizeof(struct sockaddr_in));
 	serv_addr->sin_family = AF_INET;
 	serv_addr->sin_addr.s_addr= htonl(INADDR_ANY);
-	serv_addr->sin_port = htons(PORT);
+	serv_addr->sin_port = htons(port);
 
-	ERR(bind(*socket_fd, (struct sockaddr*) serv_addr, sizeof(*serv_addr)), "Failed bind()");
+	ERR(bind(socket_fd, (struct sockaddr*) serv_addr, sizeof(*serv_addr)), "Failed bind()");
 
-	ERR(listen(*socket_fd, 5), "Failed listen()");
+	ERR(listen(socket_fd, 5), "Failed listen()");
+	return socket_fd;
 }
 
-void epoll_init(int* epoll_fd, int* socket_fd, struct epoll_event* event)
+int epoll_init(int socket_fd, struct epoll_event* event)
 {
-	*epoll_fd = epoll_create1(0);
-	ERR(*epoll_fd, "Failed epoll_create1()");
+	int epoll_fd = epoll_create1(0);
+	ERR(epoll_fd, "Failed epoll_create1()");
+	struct epoll_event event;
 	event->events = EPOLLIN;
-	event->data.fd = *socket_fd;
-	ERR(epoll_ctl(*epoll_fd, EPOLL_CTL_ADD, *socket_fd, event), "Failed epoll_ctl()");
+	event->data.fd = socket_fd;
+	ERR(epoll_ctl(epoll_fd, EPOLL_CTL_ADD, socket_fd, event), "Failed epoll_ctl()");
+	return epoll_fd;
 }
 
-void read_request(int* fd, int* epoll_fd, char* buffer)
-{
-	ERR(read(*fd, buffer, BUFFER_SIZE), "Failed read()");
-	struct epoll_event updated_event;
-	updated_event.events = EPOLLOUT;
-	updated_event.data.fd = *fd;
-	ERR(epoll_ctl(*epoll_fd, EPOLL_CTL_MOD, *fd, &updated_event),  "Failed epoll_ctl()");
+const char* eom="\r\n\r\n";
+const int eom_len=4;
+
+int message_has_ended(int fd) {
+	const char* buffer=buffer_manager[fd].buffer;
+	const int index=buffer_manager[fd].index;
+	if(size<eom_len) {
+		return 0;
+	} else {
+		return memcmp(eom, buffer+(index-eom_len), eom_len)==0;
+	}
 }
 
-void response(FILE* file, int* fd, int* file_len, char* file_content)
-{
-	int retval = fread((void*)file_content, 1, *file_len, file);//change to read()
-	ERR(retval, "Failed fread()");
-	retval = write(*fd, file_content, strlen(file_content));
-	ERR(retval, "Faied write()");
-	free(file_content);
-	fclose(file);
+void read_request(int fd, int epoll_fd) {
+	ERR(read(
+		fd,
+		buffer_manager[fd].buffer+index,
+		buffer_manager[fd].size-buffer_manager[fd].index,
+	), "Failed read()");
+	if(message_has_ended(fd)) {
+		//get_file_name(buffer, filename);
+		struct epoll_event updated_event;
+		updated_event.events = EPOLLOUT;
+		updated_event.data.fd =fd;
+		ERR(epoll_ctl(epoll_fd, EPOLL_CTL_MOD, fd, &updated_event),  "Failed epoll_ctl()");
+	}
 }
 
-void accept_request(int* socket_fd, int* epoll_fd, struct sockaddr_in* client_addr)
+void handle_response(FILE* file, int* fd, int* file_len, char* file_content)
 {
-	unsigned int len = sizeof(client_addr);
-	int accept_fd = accept(*socket_fd, (struct sockaddr*) client_addr, &len);
-	ERR(accept_fd, "Failed accept()");
-	struct epoll_event new_event;
-	new_event.events = EPOLLIN;
-	new_event.data.fd = accept_fd;
-	ERR(epoll_ctl(*epoll_fd, EPOLL_CTL_ADD, accept_fd, &new_event),  "Failed epoll_ctl()");
+int retval = fread((void*)file_content, 1, *file_len, file);//change to read()
+ERR(retval, "Failed fread()");
+retval = write(*fd, file_content, strlen(file_content));
+ERR(retval, "Faied write()");
+free(file_content);
+fclose(file);
+}
+
+int accept_request(int socket_fd, int epoll_fd)
+{
+struct sockaddr_in client_addr;
+unsigned int len = sizeof(client_addr);
+int accept_fd = accept(socket_fd, (struct sockaddr*) client_addr, &len);
+ERR(accept_fd, "Failed accept()");
+struct epoll_event new_event;
+new_event.events = EPOLLIN;
+new_event.data.fd = accept_fd;
+ERR(epoll_ctl(epoll_fd, EPOLL_CTL_ADD, accept_fd, &new_event),  "Failed epoll_ctl()");
+buffer_manager[accept_fd].index=0;
+buffer_manager[accept_fd].size=max_message;
+return accept_fd;
 }
 
 void get_file_name(char* buffer, char* filename)
 {
-	int i = 0, j = 0;
+int i = 0, j = 0;
 	while(buffer[i++] != '/'){}
 
 	while(buffer[i] != ' ')
