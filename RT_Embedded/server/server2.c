@@ -23,9 +23,9 @@ int loop = 1;
 typedef struct _response
 {
 	char* buffer;
+	char* filename;
 	unsigned int index;
 	unsigned int size;
-	char* filename;
 
 } response;
 
@@ -33,17 +33,8 @@ response* buffer_manager;
 
 void ERR(int n, const char* msg);
 void check_not_null(void* p, const char* msg);
-void init_buffer_manager() {
-	buffer_manager=(response*)malloc(sizeof(response)*num_of_events);
-	check_not_null(buffer_manager, "alloc");
-	for(int i=0;i<num_of_events;i++) {
-		buffer_manager[i].buffer=(char*)malloc(max_message);
-		check_not_null(buffer_manager[i].buffer, "alloc");
-		buffer_manager[i].index=0;
-		buffer_manager[i].size=max_message;
-		buffer_manager[i].filename=NULL;
-	}
-}
+
+void init_buffer_manager();
 int message_has_ended(int fd);
 int socket_init();
 int epoll_init(int socket_fd);
@@ -57,13 +48,6 @@ void SIGINT_handler(int signal) {
 	printf("\nSignal %d accepted\nNothing to do with this yet\n", signal);
 	loop = 0;
 }
-
-/*
-*TODO:
-*	make sure read and write complete task
-*	C^ siglnal handler
-*	output to browser
-*/
 
 int main(int argc, char const *argv[])
 {
@@ -203,27 +187,27 @@ void read_request(int fd, int epoll_fd) {
 
 void handle_response(FILE* file, int* fd, int* file_len, char* file_content)
 {
-int retval = fread((void*)file_content, 1, *file_len, file);//change to read()
-ERR(retval, "Failed fread()");
-retval = write(*fd, file_content, strlen(file_content));
-ERR(retval, "Faied write()");
-free(file_content);
-fclose(file);
+	int retval = fread((void*)file_content, 1, *file_len, file);//change to read()
+	ERR(retval, "Failed fread()");
+	retval = write(*fd, file_content, strlen(file_content));
+	ERR(retval, "Faied write()");
+	free(file_content);
+	fclose(file);
 }
 
 int accept_request(int socket_fd, int epoll_fd)
 {
-struct sockaddr_in client_addr;
-unsigned int len = sizeof(client_addr);
-int accept_fd = accept(socket_fd, (struct sockaddr*) client_addr, &len);
-ERR(accept_fd, "Failed accept()");
-struct epoll_event new_event;
-new_event.events = EPOLLIN;
-new_event.data.fd = accept_fd;
-ERR(epoll_ctl(epoll_fd, EPOLL_CTL_ADD, accept_fd, &new_event),  "Failed epoll_ctl()");
-buffer_manager[accept_fd].index=0;
-buffer_manager[accept_fd].size=max_message;
-return accept_fd;
+	struct sockaddr_in client_addr;
+	unsigned int len = sizeof(client_addr);
+	int accept_fd = accept(socket_fd, (struct sockaddr*) client_addr, &len);
+	ERR(accept_fd, "Failed accept()");
+	struct epoll_event new_event;
+	new_event.events = EPOLLIN;
+	new_event.data.fd = accept_fd;
+	ERR(epoll_ctl(epoll_fd, EPOLL_CTL_ADD, accept_fd, &new_event),  "Failed epoll_ctl()");
+	buffer_manager[accept_fd].index=0;
+	buffer_manager[accept_fd].size=max_message;
+	return accept_fd;
 }
 
 void get_file_name(char* buffer, char* filename)
@@ -246,4 +230,18 @@ int get_file_len(FILE* file)
 	int retval = ftell(file);
 	fseek(file, 0, SEEK_SET);
 	return retval;
+}
+
+void init_buffer_manager() {
+	buffer_manager=(response*)malloc(sizeof(response)*num_of_events);
+	check_not_null(buffer_manager, "malloc error");
+
+	for(int i=0;i<num_of_events;i++) {
+
+		buffer_manager[i].buffer=(char*)malloc(max_message);
+		check_not_null(buffer_manager[i].buffer, "alloc");
+		buffer_manager[i].index=0;
+		buffer_manager[i].size=max_message;
+		buffer_manager[i].filename=NULL;
+	}
 }
