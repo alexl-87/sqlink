@@ -9,22 +9,10 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/stat.h>
-using namespace std;
+#include <fstream>
+#include <fcntl.h>
 
-const char* error_html=\
-"HTTP/1.1 200 OK\n"
-"Date: Mon, 27 Jul 2009 12:28:53 GMT\n"
-"Server: Apache/2.2.14 (Win32)\n"
-"Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT\n"
-"Content-Type: text/html\n"
-"Connection: Closed\n"
-"\n"
-"<html>\n"
-"<body>\n"
-"<h1>ERROR 440044</h1>\n"
-"<p>request page not found</p>\n"
-"</body>\n"
-"</html>\n";
+using namespace std;
 
 /* Error handler */
 class ERR
@@ -33,9 +21,9 @@ public:
 	ERR();
 	~ERR();
 
-	static void M1_ERR(const int val){
+	static void M1_ERR(const int val, const char* msg){
 		if(val == -1){
-			cerr << "-1 error" << endl;
+			cerr << msg << endl;
 			exit(1);
 		}
 	}
@@ -68,12 +56,12 @@ public:
 
 	virtual ~handler()
 	{
-		ERR::M1_ERR(close(fd));
+		ERR::M1_ERR(close(fd), "Failed to close handler fd");
 	}
 
 	virtual void accept_request(int event)=0;
 
-	unsigned int get_fd(){
+	unsigned int get_fd()const{
 		return fd;
 	}
 
@@ -89,7 +77,7 @@ class reactor
 public:
 	reactor(){
 		epoll_fd = epoll_create1(0);
-		ERR::M1_ERR(epoll_fd);
+		ERR::M1_ERR(epoll_fd, "Failed to get epoll_fd");
 		cout << "New reactor created with epoll_fd = " << epoll_fd << endl;
 	}
 
@@ -110,8 +98,8 @@ public:
 		handlers.erase(curr_fd);
 	}
 
-	void start_reactor(unsigned int num_of_events){// delete num of events
-		if (num_of_events < 1 || handlers.size() < 1){
+	void start_reactor(unsigned int num_of_events){
+		if (handlers.size() < 1){
 			cerr << "No events to handle" << endl;
 			return;
 		}
@@ -119,7 +107,7 @@ public:
 		struct epoll_event* events_q = new struct epoll_event[num_of_events];
 		while(1) {
 			int events_counter = epoll_wait(epoll_fd, events_q, num_of_events, -1);
-			ERR::M1_ERR(events_counter);
+			ERR::M1_ERR(events_counter, "Failed to get events counter");
 			for(int i=0;i<events_counter;i++){
 				int fd = events_q[i].data.fd;
 				int events=events_q[i].events;
@@ -131,7 +119,7 @@ public:
 		delete[] events_q;
 	}
 	virtual ~reactor(){
-		ERR::M1_ERR(close(epoll_fd));
+		ERR::M1_ERR(close(epoll_fd), "failed to close epoll_fd");
 		handlers.clear();
 	}
 
@@ -144,13 +132,12 @@ protected:
 		struct epoll_event new_event;
 		new_event.events = event;
 		new_event.data.fd = curr_fd;
-		ERR::M1_ERR(epoll_ctl(epoll_fd, mod, curr_fd, &new_event));
+		ERR::M1_ERR(epoll_ctl(epoll_fd, mod, curr_fd, &new_event), "Failed epoll_ctl");
 		cout<< "Terminated operation on a handler:" << endl
 			<< "fd = " << curr_fd << endl
 			<< "mode = " << mod << endl;
 	}
 };
-
 
 /* Internet handler*/
 
@@ -159,7 +146,7 @@ class internet_handler:public handler
 public:
 	internet_handler(int fd, reactor* r):handler(fd, r)
 	{
-		index = 0;
+		read_index = 0;
 		size = 4096;
 		buffer = new char[size];
 		filename = new char[128];
@@ -184,50 +171,80 @@ public:
 	}
 
 protected:	
+
 	bool message_is_complete() {
 		const char* eom="\r\n\r\n";
 		const int eom_len=4;
 
-		if(index<4) return false;
+		if(read_index<4) return false;
 
-		return memcmp(buffer+index-eom_len, eom, eom_len)==0;
+		return memcmp(buffer+read_index-eom_len, eom, eom_len)==0;
 	}
+
 	void read_request()
 	{
 		cout << "Reading internet request" << endl;
 		
-		int retval = read(fd, buffer+index, size-index);
-		ERR::M1_ERR(retval);
+		int retval = read(fd, buffer+read_index, size-read_index);
+		ERR::M1_ERR(retval, "Failed to read request from browser");
 		if(retval == 0){
 			my_reactor->remove_handler(this->fd);
+
 		}else{
 
-			index+=retval;
+			read_index+=retval;
 		
 			if(message_is_complete()) {
 				request_parser();
 				cout << "File name is: " << filename << endl;
-				index = 0;
-				// struct stat statbuf;
-				// check_error(stat(filename, &statbuf));
-				// int file_size = statbuf.st_size;
+				read_index = 0;
+				write_index = 0;
+				int new_fd = open(filename, O_RDONLY);
+				if (new_fd == -1){
+					cerr << "Cant open file" << endl;
+					my_reactor->remove_handler(this->fd);
+				}else{
+					html_file_fd = new_fd;
+					struct stat file_stat;
+					fstat(html_file_fd, &file_stat);
+					int new_size = file_stat.st_size;
+					if (size < new_size){
+						delete[] buffer;
+						buffer = new char[new_size];
+					}
+					cout << "New buffer size = " << new_size << endl;
+					size = new_size;
+				}
 				my_reactor->update_handler(this->fd, EPOLLOUT);
 			}
 		}
-
 	}
+
 
 	void write_response()
 	{
-		int fd  = open(filename, O_RDONLY);
-		if(fd == -1){
-			cout << "Inside write response" << endl;
-			ERR::M1_ERR(write(fd, error_html, strlen(error_html)));
-			my_reactor->remove_handler(fd);
+		cout << "Inside write response function" << endl;
+		if(read_index < size){
+			ERR::M1_ERR(lseek(html_file_fd, read_index, SEEK_SET), "Failed to seak");
+			int retval = read(html_file_fd, buffer+read_index, size - read_index);
+			ERR::M1_ERR(retval, "Failed to read from opened html file");
+			read_index += retval;
 		}else{
-			
+			cout << "Closing html file" << endl;
+			ERR::M1_ERR(close(html_file_fd), "Failed to close html file");
 		}
 
+		if(write_index < size && write_index < read_index)
+		{
+			int retval = write(fd, buffer+write_index, read_index - write_index);
+			ERR::M1_ERR(retval, "Failet to write to internet handler fd");
+			write_index += retval;
+		}
+
+		if (write_index >= size)
+		{
+			my_reactor->remove_handler(this->fd);
+		}
 	}
 
 	void request_parser()
@@ -247,9 +264,10 @@ protected:
 
 	char* buffer;
 	char* filename;
-	int index;
+	int read_index;
+	int write_index;
 	int size;
-
+	int html_file_fd;
 };
 
 /************/
@@ -259,15 +277,15 @@ class socket_handler:public handler
 public:
 	socket_handler(const int port, const int queue_capacity, reactor* r):handler(r){
 		int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
-		ERR::M1_ERR(socket_fd);
+		ERR::M1_ERR(socket_fd, "Failed to get socket fd");
 		this->fd = socket_fd;
 		struct sockaddr_in serv_addr;
 		bzero((void*) &serv_addr, sizeof(struct sockaddr_in));
 		serv_addr.sin_family = AF_INET;
 		serv_addr.sin_addr.s_addr= htonl(INADDR_ANY);
 		serv_addr.sin_port = htons(port);
-		ERR::M1_ERR(bind(fd, (struct sockaddr*) &serv_addr, sizeof(serv_addr)));
-		ERR::M1_ERR(listen(fd, queue_capacity));
+		ERR::M1_ERR(bind(fd, (struct sockaddr*) &serv_addr, sizeof(serv_addr)), "Failed bind");
+		ERR::M1_ERR(listen(fd, queue_capacity), "Failed listen");
 		cout << "Socket handler created with fd = " << this->fd << endl;
 		my_reactor->add_handler(this, EPOLLIN);
 
@@ -280,7 +298,7 @@ public:
 		struct sockaddr_in client_addr;
 		unsigned int len = sizeof(client_addr);
 		int accept_fd = accept(this->fd, (struct sockaddr*) &client_addr, &len);
-		ERR::M1_ERR(accept_fd);
+		ERR::M1_ERR(accept_fd, "Failed to accept new connection");
 		internet_handler* new_internet_handler =new internet_handler(accept_fd, my_reactor);
 		ERR::NULL_ERR(new_internet_handler);
 		my_reactor->add_handler(new_internet_handler, EPOLLIN);
