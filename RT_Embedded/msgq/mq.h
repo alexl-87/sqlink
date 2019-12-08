@@ -8,8 +8,8 @@
 #pragma pack(push, 1)
 struct mq_reg
 {
-    const char* data;
-    int size;
+	const char* data;
+	int size;
 };
 #pragma pack(pop)
 

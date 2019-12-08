@@ -10,7 +10,7 @@
 #include <linux/slab.h> /*kmalloc()*/
 #include <linux/list.h>
 #include <linux/uaccess.h>//copy_from_user
-#define MINOR_COUNT 8
+#define NUM_OF_MINORS 8
 #define MAX_MSG_CAPACITY 100
 
 /*STRUCTS*/
@@ -31,7 +31,7 @@ struct ipc_queue
 	unsigned long msg_counter;
 	wait_queue_head_t wait_write_queue;
 	wait_queue_head_t wait_read_queue;
-	struct mutex lock_1;
+	struct mutex lock;
 	struct list_head list;
 
 };
@@ -39,23 +39,22 @@ struct ipc_queue
 static struct ipc_queue* msgq_list;
 /***END OF STRUCTS***/
 
-static int isEmpty(struct ipc_queue* queue)
+static int isNotEmpty(struct ipc_queue* queue)
 {
-	mutex_lock(&queue->lock_1);
-	if(!queue->msg_counter)
+	mutex_lock(&queue->lock);
+	if(queue->msg_counter==0)
 	{
-		mutex_unlock(&queue->lock_1);
+		mutex_unlock(&queue->lock);
 		return 0;
 	}
 	return 1;
 }
 
-static int isFull(struct ipc_queue* queue)
+static int isNotFull(struct ipc_queue* queue)
 {
-	mutex_lock(&queue->lock_1);
-	if(queue->msg_counter > (MAX_MSG_CAPACITY-1))
-	{
-		mutex_unlock(&queue->lock_1);
+	mutex_lock(&queue->lock);
+	if(queue->msg_counter==MAX_MSG_CAPACITY) {
+		mutex_unlock(&queue->lock);
 		return 0;
 	}
 	return 1;
@@ -67,7 +66,7 @@ static void ipc_msgq_ctor(struct ipc_queue* queue, struct device* dev)
 	queue->msgq_dev = dev;
 	init_waitqueue_head(&queue->wait_write_queue);
 	init_waitqueue_head(&queue->wait_read_queue);
-	mutex_init(&queue->lock_1);
+	mutex_init(&queue->lock);
 	INIT_LIST_HEAD(&queue->list);
 }
 
@@ -140,43 +139,35 @@ static long ipc_msgq_dev_ioctl(struct file* f, unsigned int mode, unsigned long 
 				return retval;
 			}
 
-			wait_event_interruptible(curr_ipc_queue->wait_write_queue, isFull(curr_ipc_queue));
+			wait_event_interruptible(curr_ipc_queue->wait_write_queue, isNotFull(curr_ipc_queue));
 			list_add(&new_q_message->node, &curr_ipc_queue->list);
 			pr_info("ipc_msgq_dev: recieved message %s\n", new_q_message->data);
 			pr_info("ipc_msgq_dev: recieved message size = %d\n", new_q_message->size);
 			++curr_ipc_queue->msg_counter;
-			mutex_unlock(&curr_ipc_queue->lock_1);
+			mutex_unlock(&curr_ipc_queue->lock);
 			wake_up_interruptible(&curr_ipc_queue->wait_read_queue);
 			return 0;
 
 		case MSGQ_READER:
 
 			pr_info("ipc_msgq_dev: inside READER mode\n");
-			wait_event_interruptible(curr_ipc_queue->wait_read_queue, isEmpty(curr_ipc_queue));
+			wait_event_interruptible(curr_ipc_queue->wait_read_queue, isNotEmpty(curr_ipc_queue));
 			new_q_message = list_entry((&curr_ipc_queue->list)->prev, struct q_message, node);
-
-			if (IS_ERR(new_q_message))
-			{
-				pr_err("ipc_msgq_dev: kmalloc q_message error\n");
-				return PTR_ERR(new_q_message);
-			}
+			list_del((&curr_ipc_queue->list)->prev);
+			curr_ipc_queue->msg_counter--;
+			mutex_unlock(&curr_ipc_queue->lock);
+			wake_up_interruptible(&curr_ipc_queue->wait_write_queue);			
 
 			pr_info("ipc_msgq_dev: message size - %d\n", new_q_message->size);
 			pr_info("ipc_msgq_dev: message - %s\n", new_q_message->data);
-
 			retval = copy_to_user((char*)message_addr, new_q_message->data, new_q_message->size);
 			if (retval)
 			{
 				pr_err("ipc_msgq_dev: copy_to_user error\n");
 				return retval;
 			}
-
-			list_del((&curr_ipc_queue->list)->prev);
-			--curr_ipc_queue->msg_counter;
 			q_message_dtor(new_q_message);
-			mutex_unlock(&curr_ipc_queue->lock_1);
-			wake_up_interruptible(&curr_ipc_queue->wait_write_queue);			
-
+			
 			return new_q_message->size;
 
 		default:
@@ -202,14 +193,14 @@ static int __init msgq_init(void)
 	int i;
 	pr_info("ipc_msgq_dev: Inserting ipc_msgq_dev module\n");
 
-	msgq_list = kmalloc(sizeof(struct ipc_queue)*MINOR_COUNT, GFP_KERNEL);
+	msgq_list = kmalloc(sizeof(struct ipc_queue)*NUM_OF_MINORS, GFP_KERNEL);
 	if(!msgq_list)
 	{
 		pr_err("ipc_msgq_dev: ***FAIL*** kmalloc(msgq_list)\n");
 		goto ret_val_exit;
 	}
 
-	retval = alloc_chrdev_region(&dev_msgq, 0, MINOR_COUNT, "ipc_msgq_dev");
+	retval = alloc_chrdev_region(&dev_msgq, 0, NUM_OF_MINORS, "ipc_msgq_dev");
 	if (retval != 0)
 	{
 		pr_err("ipc_msgq_dev: ***FAIL*** alloc_chrdev_region()\n");
@@ -220,7 +211,7 @@ static int __init msgq_init(void)
 
 	cdev_init(&cdev_msgq, &file_ops);
 
-	retval = cdev_add(&cdev_msgq, dev_msgq, MINOR_COUNT);
+	retval = cdev_add(&cdev_msgq, dev_msgq, NUM_OF_MINORS);
 	if (retval != 0)
 	{
 		pr_err("ipc_msgq_dev: ***FAIL*** cdev_add()\n");
@@ -236,7 +227,7 @@ static int __init msgq_init(void)
 		goto class_create_err;
 	}
 
-	for (i = 0; i < MINOR_COUNT; ++i)
+	for (i = 0; i < NUM_OF_MINORS; ++i)
 	{
 		struct device* dev = device_create(	class_msgq, 
 											NULL, 
@@ -264,7 +255,7 @@ class_create_err:
 	cdev_del(&cdev_msgq);
 
 cdev_add_err:
-	unregister_chrdev_region(dev_msgq, MINOR_COUNT);
+	unregister_chrdev_region(dev_msgq, NUM_OF_MINORS);
 
 alloc_chrdev_region_err:
 	kfree(msgq_list);
@@ -275,11 +266,11 @@ ret_val_exit:
 
 static void __exit msqq_exit(void)
 {
-	int i = 0;
+	int i;
 	pr_info("ipc_msgq_dev: Removing msg queue module\n");
 	
 	pr_info("ipc_msgq_dev: Devices destroy\n");
-	for(;i < MINOR_COUNT; ++i)
+	for(i=0;i < NUM_OF_MINORS; ++i)
 	{
 		device_destroy(class_msgq, 
 						MKDEV(	MAJOR(dev_msgq), 
@@ -293,7 +284,7 @@ static void __exit msqq_exit(void)
 	cdev_del(&cdev_msgq);
 
 	pr_info("ipc_msgq_dev: unregister_chrdev_region\n");
-	unregister_chrdev_region(dev_msgq, MINOR_COUNT);
+	unregister_chrdev_region(dev_msgq, NUM_OF_MINORS);
 
 	pr_info("ipc_msgq_dev: kfree\n");
 	kfree(msgq_list);

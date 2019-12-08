@@ -8,12 +8,27 @@
 #include <strings.h>
 #include <unistd.h>
 #include <string.h>
-
+#include <sys/stat.h>
 using namespace std;
+
+const char* error_html=\
+"HTTP/1.1 200 OK\n"
+"Date: Mon, 27 Jul 2009 12:28:53 GMT\n"
+"Server: Apache/2.2.14 (Win32)\n"
+"Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT\n"
+"Content-Type: text/html\n"
+"Connection: Closed\n"
+"\n"
+"<html>\n"
+"<body>\n"
+"<h1>ERROR 440044</h1>\n"
+"<p>request page not found</p>\n"
+"</body>\n"
+"</html>\n";
+
 /* Error handler */
 class ERR
 {
-
 public:
 	ERR();
 	~ERR();
@@ -37,18 +52,24 @@ public:
 
 class reactor;
 
-/* Base class for handlers */
+/* Base abstract class for handlers */
 
 class handler
 {
 public:
-	handler(reactor* r){
-		ERR::NULL_ERR(r);
+	handler(int my_fd, reactor* r){
 		my_reactor = r;
-		fd = -1;
+		fd = my_fd;
 	}
 
-	virtual ~handler(){}
+	handler(reactor* r){
+		my_reactor = r;
+	}
+
+	virtual ~handler()
+	{
+		ERR::M1_ERR(close(fd));
+	}
 
 	virtual void accept_request(int event)=0;
 
@@ -74,51 +95,58 @@ public:
 
 	void add_handler(handler* curr_handler, int event){
 		cout << "Adding handler with fd = " << curr_handler->get_fd() << endl;
-		handler_op(curr_handler, event, EPOLL_CTL_ADD);
+		int curr_fd = curr_handler->get_fd();
+		handlers[curr_fd] = curr_handler;
+		handler_op(curr_fd, event, EPOLL_CTL_ADD);
+		
 	}
-	void update_handler(handler* curr_handler, int event){
-		cout << "Updating existing handler with fd = " << curr_handler->get_fd() << endl;
-		handler_op(curr_handler, event, EPOLL_CTL_MOD);
+	void update_handler(int curr_fd, int event){
+		cout << "Updating existing handler with fd = " << curr_fd << endl;
+		handler_op(curr_fd, event, EPOLL_CTL_MOD);
 	}
-	void remove_handler(unsigned int fd);
+	void remove_handler(int curr_fd){
+		cout << "Updating existing handler with fd = " << curr_fd << endl;
+		handler_op(curr_fd, 0, EPOLL_CTL_DEL);
+		handlers.erase(curr_fd);
+	}
 
-	void start_reactor(unsigned int num_of_events){
+	void start_reactor(unsigned int num_of_events){// delete num of events
 		if (num_of_events < 1 || handlers.size() < 1){
 			cerr << "No events to handle" << endl;
 			return;
 		}
 		cout << "Reactor started" << endl;
+		struct epoll_event* events_q = new struct epoll_event[num_of_events];
 		while(1) {
-			struct epoll_event* events_q = new struct epoll_event[num_of_events];
 			int events_counter = epoll_wait(epoll_fd, events_q, num_of_events, -1);
 			ERR::M1_ERR(events_counter);
 			for(int i=0;i<events_counter;i++){
 				int fd = events_q[i].data.fd;
 				int events=events_q[i].events;
-				cout << "Current events value = " << events << endl;
+				cout << "Current events value = " << events << endl
+				<< "fd = " << fd << endl;
 				handlers[fd]->accept_request(events);
 			}
 		}
+		delete[] events_q;
 	}
 	virtual ~reactor(){
-
+		ERR::M1_ERR(close(epoll_fd));
+		handlers.clear();
 	}
 
 protected:
 	map<int, handler*> handlers;
 	unsigned int epoll_fd;
 
-	void handler_op(handler* curr_handler, int event, int mod)
+	void handler_op(int curr_fd, int event, int mod)
 	{
-		int curr_fd = curr_handler->get_fd();
-		handlers[curr_fd] = curr_handler;
 		struct epoll_event new_event;
 		new_event.events = event;
 		new_event.data.fd = curr_fd;
 		ERR::M1_ERR(epoll_ctl(epoll_fd, mod, curr_fd, &new_event));
-
 		cout<< "Terminated operation on a handler:" << endl
-			<< "fd = " << curr_handler->get_fd() << endl
+			<< "fd = " << curr_fd << endl
 			<< "mode = " << mod << endl;
 	}
 };
@@ -129,19 +157,20 @@ protected:
 class internet_handler:public handler
 {
 public:
-	internet_handler(int fd, reactor* r):handler(r)
+	internet_handler(int fd, reactor* r):handler(fd, r)
 	{
-		this->fd = fd;
 		index = 0;
 		size = 4096;
 		buffer = new char[size];
-		ERR::NULL_ERR(buffer);
 		filename = new char[128];
-		ERR::NULL_ERR(filename);
 		cout << "Internet handler created with fd = " << fd << endl;
 	}
 
-	virtual ~internet_handler(){}
+	virtual ~internet_handler()
+	{
+		delete[] buffer;
+		delete[] filename;
+	}
 
 	void accept_request(int event)
 	{
@@ -155,51 +184,50 @@ public:
 	}
 
 protected:	
-	void read_request()
-	{
-		cout << "Reading internet request" << endl;
+	bool message_is_complete() {
 		const char* eom="\r\n\r\n";
 		const int eom_len=4;
 
+		if(index<4) return false;
+
+		return memcmp(buffer+index-eom_len, eom, eom_len)==0;
+	}
+	void read_request()
+	{
+		cout << "Reading internet request" << endl;
+		
 		int retval = read(fd, buffer+index, size-index);
 		ERR::M1_ERR(retval);
-		if (retval < eom_len)
-		{
-			cerr<< "Illegal request accepted" << endl
-				<<"Returned value from read = " << retval << endl;
-			return;
+		if(retval == 0){
+			my_reactor->remove_handler(this->fd);
+		}else{
+
+			index+=retval;
+		
+			if(message_is_complete()) {
+				request_parser();
+				cout << "File name is: " << filename << endl;
+				index = 0;
+				// struct stat statbuf;
+				// check_error(stat(filename, &statbuf));
+				// int file_size = statbuf.st_size;
+				my_reactor->update_handler(this->fd, EPOLLOUT);
+			}
 		}
 
-		index += retval;
-
-		if(!strncmp((buffer + (index - eom_len)), eom, eom_len)){
-			cout << "Accpeted buffer from fd = "<< fd << " is:" << endl << buffer << endl;
-
-			request_parser();
-			index = 0;
-			my_reactor->update_handler(this, EPOLLOUT);
-		}
 	}
 
 	void write_response()
 	{
-		cout << "Inside write response" << endl;
-		const char* response_msg=\
-		"HTTP/1.1 200 OK\n" \
-		"Date: Mon, 27 Jul 2009 12:28:53 GMT\n" \
-		"Server: Apache/2.2.14 (Win32)\n" \
-		"Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT\n" \
-		"Content-Type: text/html\n" \
-		"Connection: Closed\n" \
-		"\n" \
-		"<html>\n" \
-		"<body>\n" \
-		"<h1>Welcome to my website</h1>\n" \
-		"<p>my website is bla bla bla</p>\n" \
-		"</body>\n" \
-		"</html>\n";
-		ERR::M1_ERR(write(fd, response_msg, strlen(response_msg)));
-		my_reactor->update_handler(this, EPOLLIN);
+		int fd  = open(filename, O_RDONLY);
+		if(fd == -1){
+			cout << "Inside write response" << endl;
+			ERR::M1_ERR(write(fd, error_html, strlen(error_html)));
+			my_reactor->remove_handler(fd);
+		}else{
+			
+		}
+
 	}
 
 	void request_parser()
@@ -215,7 +243,6 @@ protected:
 			++j;
 		}
 		filename[j] = '\0';
-		//int fd = open(filename, "r");
 	}
 
 	char* buffer;
