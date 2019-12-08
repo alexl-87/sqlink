@@ -57,6 +57,7 @@ public:
 	virtual ~handler()
 	{
 		ERR::M1_ERR(close(fd), "Failed to close handler fd");
+		cout << "File descriptor " << fd << " sclosed" << endl;
 	}
 
 	virtual void accept_request(int event)=0;
@@ -75,6 +76,11 @@ protected:
 class reactor
 {
 public:
+
+	virtual ~reactor(){
+		ERR::M1_ERR(close(epoll_fd), "failed to close epoll_fd");
+		handlers.clear();
+	}
 	reactor(){
 		epoll_fd = epoll_create1(0);
 		ERR::M1_ERR(epoll_fd, "Failed to get epoll_fd");
@@ -93,8 +99,9 @@ public:
 		handler_op(curr_fd, event, EPOLL_CTL_MOD);
 	}
 	void remove_handler(int curr_fd){
-		cout << "Updating existing handler with fd = " << curr_fd << endl;
+		cout << "Deleting existing handler with fd = " << curr_fd << endl;
 		handler_op(curr_fd, 0, EPOLL_CTL_DEL);
+		delete handlers[curr_fd];
 		handlers.erase(curr_fd);
 	}
 
@@ -111,17 +118,12 @@ public:
 			for(int i=0;i<events_counter;i++){
 				int fd = events_q[i].data.fd;
 				int events=events_q[i].events;
-				cout << "Current events value = " << events << endl
-				<< "fd = " << fd << endl;
 				handlers[fd]->accept_request(events);
 			}
 		}
 		delete[] events_q;
 	}
-	virtual ~reactor(){
-		ERR::M1_ERR(close(epoll_fd), "failed to close epoll_fd");
-		handlers.clear();
-	}
+
 
 protected:
 	map<int, handler*> handlers;
@@ -133,9 +135,6 @@ protected:
 		new_event.events = event;
 		new_event.data.fd = curr_fd;
 		ERR::M1_ERR(epoll_ctl(epoll_fd, mod, curr_fd, &new_event), "Failed epoll_ctl");
-		cout<< "Terminated operation on a handler:" << endl
-			<< "fd = " << curr_fd << endl
-			<< "mode = " << mod << endl;
 	}
 };
 
@@ -188,6 +187,7 @@ protected:
 		int retval = read(fd, buffer+read_index, size-read_index);
 		ERR::M1_ERR(retval, "Failed to read request from browser");
 		if(retval == 0){
+			cout <<"REmoooooving" << endl;
 			my_reactor->remove_handler(this->fd);
 
 		}else{
@@ -203,6 +203,7 @@ protected:
 				if (new_fd == -1){
 					cerr << "Cant open file" << endl;
 					my_reactor->remove_handler(this->fd);
+
 				}else{
 					html_file_fd = new_fd;
 					struct stat file_stat;
@@ -214,8 +215,9 @@ protected:
 					}
 					cout << "New buffer size = " << new_size << endl;
 					size = new_size;
+					my_reactor->update_handler(this->fd, EPOLLOUT);
 				}
-				my_reactor->update_handler(this->fd, EPOLLOUT);
+				
 			}
 		}
 	}
@@ -223,7 +225,6 @@ protected:
 
 	void write_response()
 	{
-		cout << "Inside write response function" << endl;
 		if(read_index < size){
 			ERR::M1_ERR(lseek(html_file_fd, read_index, SEEK_SET), "Failed to seak");
 			int retval = read(html_file_fd, buffer+read_index, size - read_index);
@@ -307,8 +308,6 @@ public:
 
 int main(int argc, char const *argv[])
 {
-	cout<< "EPOLL_CTL_MOD = " << EPOLL_CTL_MOD << endl
-		<< "EPOLL_CTL_ADD = " << EPOLL_CTL_ADD << endl;
 	reactor r;
 	socket_handler s(5050, 10, &r);
 	r.start_reactor(100);
