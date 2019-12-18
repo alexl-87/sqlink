@@ -1,12 +1,10 @@
 #ifndef Socket_handler
 #define Socket_handler
-#include "Handler.h"
-#include "Reactor.h"
 #include "Internet_handler.h"
-#include "Handler.h"
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <strings.h>
 #include <iostream>
 using namespace std;
 

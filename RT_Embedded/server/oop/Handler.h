@@ -1,9 +1,9 @@
 #ifndef Handler
 #define Handler
-#include "Reactor.h"
 #include "Err.h"
 #include <iostream>
 using namespace std;
+class reactor;
 class handler
 {
 public:

@@ -1,7 +1,5 @@
 #ifndef Internet_handler
 #define Internet_handler
-#include "Handler.h"
-#include "Reactor.h"
 #include "Err.h"
 #include <sys/epoll.h>
 #include <iostream>
@@ -10,6 +8,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 using namespace std;
+
 class internet_handler:public handler
 {
 public:
@@ -72,7 +71,6 @@ void internet_handler::read_request()
 	int retval = read(fd, buffer+read_index, size-read_index);
 	ERR::M1_ERR(retval, "Failed to read request from browser");
 	if(retval == 0){
-		cout <<"REmoooooving" << endl;
 		my_reactor->remove_handler(this->fd);
 
 	}else{
