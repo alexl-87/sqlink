@@ -63,8 +63,7 @@ void* response(void* arg)
 	}
 
 	get_file_name(buffer, filename);
-	//printf("Buffer content is %s\n", buffer);
-	//printf("***Filename is %s\n", filename);
+
 
 	file = fopen(filename, "r");
 
@@ -76,7 +75,6 @@ void* response(void* arg)
 
 		file_content = malloc(file_len);
 		retval = fread((void*)file_content, 1, file_len, file);
-		//printf("File content is : %s\n", file_content);
 
 		retval = write(fd, file_content, strlen(file_content));
 		fclose(file);

@@ -177,7 +177,6 @@ void read_request(int fd, int epoll_fd) {
 		buffer_manager[fd].size-buffer_manager[fd].index,
 	), "Failed read()");
 	if(message_has_ended(fd)) {
-		//get_file_name(buffer, filename);
 		struct epoll_event updated_event;
 		updated_event.events = EPOLLOUT;
 		updated_event.data.fd =fd;
