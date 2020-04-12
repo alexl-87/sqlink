@@ -1,8 +1,8 @@
 CFLAGS = -c -ansi -pedantic
-COMPILER = g++
+COMPILER = gcc
 
 fdup : MD5_calculator.o DirWalk.o H_Hash.o FindDuplicate.o
-	$(COMPILER) -o fdup MD5_calculator.o DirWalk.o H_Hash.o FindDuplicate.o -lcrypto -lssl
+	$(COMPILER) -o fdup *.o -lcrypto -lssl
 
 MD5_calculator.o : MD5_calculator.c MD5_calculator.h
 	$(COMPILER) $(CFLAGS) MD5_calculator.c
